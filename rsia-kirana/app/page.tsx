@@ -1,5 +1,6 @@
 import React from 'react';
 import { Heart, Calendar, Clock, Phone, MapPin, UserCheck, Stethoscope, Baby, ShieldCheck, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -37,12 +38,12 @@ export default function Home() {
             <a href="#beranda" className="hover:text-rose-600 transition-colors">Beranda</a>
             <a href="#layanan" className="hover:text-rose-600 transition-colors">Layanan Unggulan</a>
             <a href="#dokter" className="hover:text-rose-600 transition-colors">Jadwal Dokter</a>
-            <a href="#fasilitas" className="hover:text-rose-600 transition-colors">Fasilitas</a>
+            <a href="/fasilitas" className="hover:text-rose-600 transition-colors">Fasilitas</a>
           </nav>
 
           {/* CTA Button */}
           <a 
-            href="#janji-temu" 
+            href="/janji-temu" 
             className="bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-sm hover:shadow-md transition-all flex items-center gap-2"
           >
             <Calendar size={16} /> Buat Janji Temu
@@ -65,7 +66,7 @@ export default function Home() {
                 RSIA Kirana menghadirkan penanganan medis profesional berkibar kehangatan keluarga, didukung tim dokter spesialis kandungan dan anak berpengalaman.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
-                <a href="#janji-temu" className="bg-rose-500 hover:bg-rose-600 text-white px-8 py-3.5 rounded-xl text-base font-semibold shadow-lg shadow-rose-200 transition-all text-center">
+                <a href="/janji-temu" className="bg-rose-500 hover:bg-rose-600 text-white px-8 py-3.5 rounded-xl text-base font-semibold shadow-lg shadow-rose-200 transition-all text-center">
                   Daftar Online Sekarang
                 </a>
                 <a href="/layanan" className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-8 py-3.5 rounded-xl text-base font-semibold transition-all text-center">
@@ -137,7 +138,7 @@ export default function Home() {
               <h2 className="text-3xl font-bold text-slate-900">Tim Dokter Spesialis</h2>
               <p className="text-slate-600 mt-2">Tenaga medis profesional dan ramah siap mendampingi Anda.</p>
             </div>
-            <a href="#" className="text-rose-600 font-semibold flex items-center gap-1 hover:gap-2 transition-all mt-4 md:mt-0">
+            <a href="/dokter" className="text-rose-600 font-semibold flex items-center gap-1 hover:gap-2 transition-all mt-4 md:mt-0">
               Lihat Semua Dokter <ChevronRight size={18} />
             </a>
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-// import Link from 'next/from-navigation' || 'next/link'; // fallback
+import Link from 'next/link'; // fallback
 import LinkNext from 'next/link';
 import { 
   Heart, 
