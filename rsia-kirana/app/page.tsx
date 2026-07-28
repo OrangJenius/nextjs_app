@@ -156,9 +156,12 @@ export default function Home() {
                 </div>
                 <h4 className="font-bold text-slate-900">{doc.name}</h4>
                 <p className="text-xs text-rose-500 font-medium mt-1 mb-4">{doc.spec}</p>
-                <button className="w-full py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-semibold transition-colors">
+                <Link 
+                  href="/dokter"
+                  className="block text-center w-full py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-semibold transition-colors"
+                >
                   Lihat Jadwal Praktik
-                </button>
+                </Link>
               </div>
             ))}
           </div>
