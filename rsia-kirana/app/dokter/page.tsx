@@ -10,7 +10,6 @@ import {
   UserCheck, 
   ArrowLeft, 
   Filter,
-  CheckCircle2,
   PhoneCall
 } from 'lucide-react';
 
@@ -18,7 +17,7 @@ interface Doctor {
   id: number;
   name: string;
   specialty: string;
-  category: 'kebidanan' | 'anak' | 'tumbuhKembang';
+  category: 'kebidanan' | 'anak' | 'penyakitDalam' | 'endokrin' | 'jantung' | 'saraf' | 'rehabMedik' | 'bedah';
   experience: string;
   almamater: string;
   schedules: {
@@ -35,76 +34,177 @@ export default function DokterPage() {
   const doctors: Doctor[] = [
     {
       id: 1,
-      name: "dr. Jane Doe, Sp.OG",
-      specialty: "Spesialis Kebidanan & Kandungan",
-      category: "kebidanan",
-      experience: "12 Tahun",
-      almamater: "Universitas Indonesia",
+      name: "Dr. dr. Novie H. Rampengan, Sp.A(K)",
+      specialty: "Subspesialis Infeksi & Penyakit Tropis",
+      category: "anak",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
       schedules: [
-        { days: "Senin - Rabu", hours: "08:00 - 12:00 WIB" },
-        { days: "Jumat", hours: "14:00 - 17:00 WIB" }
+        { days: "Jumat", hours: "15:00 - 17:00 WITA" },
+        { days: "Sabtu", hours: "14:30 - 17:30 WITA" }
       ]
     },
     {
       id: 2,
-      name: "dr. John Doe, Sp.A",
-      specialty: "Spesialis Kesehatan Anak",
+      name: "dr. Jane Metusala, Sp.A",
+      specialty: "Spesialis Anak",
       category: "anak",
       experience: "10 Tahun",
-      almamater: "Universitas Gadjah Mada",
+      almamater: "Universitas Sam Ratulangi",
       schedules: [
-        { days: "Senin - Kamis", hours: "09:00 - 13:00 WIB" },
-        { days: "Sabtu", hours: "08:00 - 11:00 WIB" }
+        { days: "Selasa", hours: "12:15 - 14:15 WITA" },
+        { days: "Kamis", hours: "12:30 - 14:30 WITA" }
       ]
     },
     {
       id: 3,
-      name: "dr. Alice, Sp.OG (K) Fetomaternal",
-      specialty: "Subspesialis Kebidanan & Fetomaternal",
-      category: "kebidanan",
-      experience: "15 Tahun",
-      almamater: "Universitas Airlangga",
+      name: "dr. Irene Maryauw, Sp.A",
+      specialty: "Spesialis Anak",
+      category: "anak",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
       schedules: [
-        { days: "Selasa & Kamis", hours: "13:00 - 17:00 WIB" },
-        { days: "Sabtu", hours: "10:00 - 14:00 WIB" }
+        { days: "Selasa", hours: "10:05 - 12:00 WITA" },
+        { days: "Rabu", hours: "08:00 - 10:00 WITA" }
       ]
     },
     {
       id: 4,
-      name: "dr. Bob, Sp.A",
-      specialty: "Spesialis Tumbuh Kembang Anak",
-      category: "tumbuhKembang",
-      experience: "8 Tahun",
-      almamater: "Universitas Padjadjaran",
+      name: "dr. Meiske Runkat, Sp.OG",
+      specialty: "Spesialis Obstetri dan Ginekologi",
+      category: "kebidanan",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
       schedules: [
-        { days: "Rabu - Jumat", hours: "10:00 - 14:00 WIB" },
-        { days: "Minggu", hours: "09:00 - 12:00 WIB" }
+        { days: "Senin - Jumat", hours: "10:00 - 12:00 WITA" },
       ]
     },
     {
       id: 5,
-      name: "dr. Jenny, Sp.OG",
-      specialty: "Spesialis Kebidanan & Kandungan",
+      name: "Prof. dr. Hermie Tendean, Sp.OG (K)",
+      specialty: "Subspesialis Obstetri Sosial",
       category: "kebidanan",
-      experience: "9 Tahun",
-      almamater: "Universitas Diponegoro",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
       schedules: [
-        { days: "Senin & Jumat", hours: "16:00 - 20:00 WIB" },
-        { days: "Sabtu", hours: "13:00 - 16:00 WIB" }
+        { days: "Senin, Selasa, & Jumat", hours: "16:00 - 18:00 WITA" },
+        { days: "Rabu", hours: "17:00 - 19:00 WITA" },
+        { days: "Sabtu", hours: "14:00 - 16:00 WITA" },
       ]
     },
     {
       id: 6,
-      name: "dr. James, Sp.A",
-      specialty: "Spesialis Anak & Neonatologi",
-      category: "anak",
-      experience: "11 Tahun",
-      almamater: "Universitas Indonesia",
+      name: "dr. Royke M.L. Rattu, Sp.OG",
+      specialty: "Spesialis Obstetri dan Ginekologi",
+      category: "kebidanan",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
       schedules: [
-        { days: "Setiap Hari", hours: "08:00 - 10:00 WIB" },
-        { days: "Selasa & Kamis", hours: "16:00 - 19:00 WIB" }
+        { days: "Senin - Rabu", hours: "08:00 - 10:00 WITA" },
       ]
-    }
+    },
+    {
+      id: 7,
+      name: "dr. Arthur H. Rampengan, Sp.PD",
+      specialty: "Spesialis Penyakit Dalam",
+      category: "penyakitDalam",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
+      schedules: [
+        { days: "Kamis", hours: "12:00 - 14:00 WITA" },
+        { days: "Jumat", hours: "12:00 - 15:00 WITA & 16:30 - 18:00 WITA" },
+        { days: "Sabtu", hours: "10:00 - 14:00 WITA & 16:30 - 18:00 WITA" },
+      ]
+    },
+    {
+      id: 8,
+      name: "dr. Novita Tanasal, Sp.PD",
+      specialty: "Spesialis Penyakit Dalam",
+      category: "penyakitDalam",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
+      schedules: [
+        { days: "Rabu", hours: "14:00 - 16:00 WITA" },
+      ]
+    },
+    {
+      id: 9,
+      name: "dr. Joel Imanuel Kekenusa, Sp.PD",
+      specialty: "Spesialis Penyakit Dalam",
+      category: "penyakitDalam",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
+      schedules: [
+        { days: "Senin - Selasa", hours: "16:00 - 17:00 WITA" },
+      ]
+    },
+    {
+      id: 10,
+      name: "dr. Bisuk P. Sedli, Sp.PD-KEMD",
+      specialty: "Spesialis Penyakit Dalam",
+      category: "endokrin",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
+      schedules: [
+        { days: "Senin & Kamis", hours: "16:00 - 17:30 WITA" },
+      ]
+    },
+    {
+      id: 11,
+      name: "Prof. Dr. dr. Starry H. Rampengan, Sp.JP(K)",
+      specialty: "Subspesialis Intervensi Kardiovaskular",
+      category: "jantung",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
+      schedules: [
+        { days: "Senin - Jumat", hours: "20:00 - 22:00 WITA" },
+        { days: "Sabtu", hours: "19:00 - 21:00 WITA" },
+      ]
+    },
+    {
+      id: 12,
+      name: "Dr. dr. Sekplin A. S. Sekeon, Sp.N(K), FMIN, MPH",
+      specialty: "Spesialis Saraf",
+      category: "saraf",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
+      schedules: [
+        { days: "Selasa & Jumat", hours: "15:00 - 17:00 WITA" },
+      ]
+    },
+    {
+      id: 13,
+      name: "dr. Florensia B. Tewal, Sp.KFR",
+      specialty: "Spesialis Kedokteran Fisik dan Rehabilitasi",
+      category: "rehabMedik",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
+      schedules: [
+        { days: "Selasa & Kamis", hours: "16:00 - 17:00 WITA" },
+      ]
+    },
+    {
+      id: 14,
+      name: "dr. Leonardo Verdy Sagay, Sp.B",
+      specialty: "Spesialis Bedah",
+      category: "bedah",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
+      schedules: [
+        { days: "Selasa & Jumat", hours: "08:00 - 10:00 WITA" },
+      ]
+    },
+    {
+      id: 15,
+      name: "dr. Pinkan Johana Lintong, Sp.B",
+      specialty: "Spesialis Bedah",
+      category: "bedah",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
+      schedules: [
+        { days: "Senin & Rabu", hours: "08:00 - 10:00 WITA" },
+      ]
+    },
   ];
 
   // Filter logic
@@ -163,7 +263,7 @@ export default function DokterPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input 
               type="text" 
-              placeholder="Cari nama dokter atau spesialisasi (misal: dr. Anisa, Anak, Fetomaternal)..."
+              placeholder="Cari nama dokter atau spesialisasi..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 bg-slate-50/50"
@@ -182,7 +282,12 @@ export default function DokterPage() {
                 { id: 'semua', label: 'Semua' },
                 { id: 'kebidanan', label: 'Kebidanan & Kandungan' },
                 { id: 'anak', label: 'Anak' },
-                { id: 'tumbuhKembang', label: 'Tumbuh Kembang' },
+                { id: 'penyakitDalam', label: 'Penyakit Dalam' },
+                { id: 'endokrin', label: 'Endokrin' },
+                { id: 'jantung', label: 'Jantung' },
+                { id: 'saraf', label: 'Saraf' },
+                { id: 'rehabMedik', label: 'Kedokteran Fisik & Rehab' },
+                { id: 'bedah', label: 'Bedah' },
               ].map((cat) => (
                 <button
                   key={cat.id}

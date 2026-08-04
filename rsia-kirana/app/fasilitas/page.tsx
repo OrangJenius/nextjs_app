@@ -22,7 +22,7 @@ export default function FasilitasPage() {
 
   const roomTypes = [
     {
-      title: "Suite VVIP",
+      title: "VIP Utama",
       tag: "Kenyamanan Maksimal",
       desc: "Kamar perawatan privat premium dengan kenyamanan serasa di rumah untuk mendukung pemulihan ibu dan kenyamanan keluarga.",
       facilities: [
@@ -36,7 +36,7 @@ export default function FasilitasPage() {
       color: "border-rose-200 bg-rose-50/40"
     },
     {
-      title: "VIP Kirana",
+      title: "VIP",
       tag: "Favorit Keluarga",
       desc: "Ruang rawat inap eksklusif satu pasien dengan fasilitas lengkap dan suasana tenang.",
       facilities: [
@@ -50,11 +50,37 @@ export default function FasilitasPage() {
       color: "border-slate-200 bg-white"
     },
     {
-      title: "Kelas 1 & Utama",
+      title: "Kelas 1",
       tag: "Privasi Terjaga",
       desc: "Ruangan nyaman diisi maksimal 2 pasien dengan sekat tirai fleksibel untuk menjaga privasi.",
       facilities: [
         "2 Tempat Tidur Pasien Manual/Electric",
+        "Kursi Penunggu untuk Masing-masing",
+        "TV Sharing & Wi-Fi",
+        "Kamar Mandi Dalam",
+        "AC Full 24 Jam"
+      ],
+      color: "border-slate-200 bg-white"
+    },
+    {
+      title: "Kelas 2",
+      tag: "Privasi Terjaga",
+      desc: "Ruangan nyaman diisi maksimal 2 pasien dengan sekat tirai fleksibel untuk menjaga privasi.",
+      facilities: [
+        "3 Tempat Tidur Pasien Manual/Electric",
+        "Kursi Penunggu untuk Masing-masing",
+        "TV Sharing & Wi-Fi",
+        "Kamar Mandi Dalam",
+        "AC Full 24 Jam"
+      ],
+      color: "border-slate-200 bg-white"
+    },
+    {
+      title: "Kelas 3",
+      tag: "Privasi Terjaga",
+      desc: "Ruangan nyaman diisi maksimal 2 pasien dengan sekat tirai fleksibel untuk menjaga privasi.",
+      facilities: [
+        "4 Tempat Tidur Pasien Manual/Electric",
         "Kursi Penunggu untuk Masing-masing",
         "TV Sharing & Wi-Fi",
         "Kamar Mandi Dalam",
@@ -74,18 +100,38 @@ export default function FasilitasPage() {
       desc: "Unit perawatan intensif khusus bayi baru lahir (NICU) dan anak (PICU) dengan pemantauan monitor vital 24 jam."
     },
     {
-      title: "Kamar Operasi (OK) Modern",
+      title: "Kamar Operasi (OK)",
       desc: "Dilengkapi teknologi filter udara HEPA untuk sterilitas tinggi saat prosedur operasi caesar maupun bedah anak."
+    },
+    {
+      title: "Ruang ICU",
+      desc: "Unit perawatan intensif dengan pemantauan monitor vital 24 jam."
     },
     {
       title: "Laboratorium & Farmasi 24 Jam",
       desc: "Layanan tes darah, skrining neonatus, dan penyediaan obat-obatan yang siaga setiap saat."
-    }
+    },
+    {
+      title: "Ruang Isolasi",
+      desc: "Layanan tes darah, skrining neonatus, dan penyediaan obat-obatan yang siaga setiap saat."
+    },
+    {
+      title: "Ruang UGD/PONEK",
+      desc: "Layanan tes darah, skrining neonatus, dan penyediaan obat-obatan yang siaga setiap saat."
+    },
+    {
+      title: "Ruang Perinatologi",
+      desc: "Layanan tes darah, skrining neonatus, dan penyediaan obat-obatan yang siaga setiap saat."
+    },
+    {
+      title: "Ruang Recovery",
+      desc: "Layanan tes darah, skrining neonatus, dan penyediaan obat-obatan yang siaga setiap saat."
+    },
   ];
 
   const publicFacilities = [
-    { name: "Klinik Tumbuh Kembang & Playground", icon: <Building2 className="text-rose-500" size={24} /> },
-    { name: "Kantin & Cafe Keluarga", icon: <Coffee className="text-amber-500" size={24} /> },
+    // { name: "Klinik Tumbuh Kembang & Playground", icon: <Building2 className="text-rose-500" size={24} /> },
+    // { name: "Kantin & Cafe Keluarga", icon: <Coffee className="text-amber-500" size={24} /> },
     { name: "Ruang Laktasi & Edukasi Menyusui", icon: <Heart className="text-pink-500" size={24} /> },
     { name: "Area Parkir Luas & Keamanan 24 Jam", icon: <ShieldCheck className="text-emerald-500" size={24} /> },
   ];

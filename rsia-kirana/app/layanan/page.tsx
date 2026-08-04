@@ -196,7 +196,7 @@ export default function LayananPage() {
               <Calendar size={16} /> Buat Janji Temu
             </LinkNext>
             <a 
-              href="https://wa.me/6281234567890" 
+              href="https://wa.me/6281388888898" 
               target="_blank" 
               rel="noreferrer" 
               className="bg-rose-700 hover:bg-rose-800 text-white font-bold px-6 py-3 rounded-xl text-xs sm:text-sm text-center transition-all flex items-center justify-center gap-2"
