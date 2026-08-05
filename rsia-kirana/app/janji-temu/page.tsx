@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { ArrowLeft, Calendar, User, ShieldAlert, CheckCircle2, Heart, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Data Dokter beserta Jadwal & Jam Praktik (WITA)
 interface DoctorInfo {
@@ -309,14 +310,19 @@ export default function JanjiTemuPage() {
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-20">
       {/* Header */}
       <header className="bg-white border-b border-rose-100 sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-slate-600 hover:text-rose-600 font-medium text-sm transition-colors">
             <ArrowLeft size={18} /> Kembali ke Beranda
           </Link>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-rose-500 rounded-full flex items-center justify-center text-white font-bold">
-              <Heart className="fill-current" size={16} />
-            </div>
+            <Image 
+              src="/images/logo.png" 
+              alt="Logo RSIA Kirana" 
+              width={32}
+              height={32}
+              className="object-contain"
+              priority
+            />
             <span className="font-bold text-slate-900 tracking-tight text-sm">RSIA KIRANA</span>
           </div>
         </div>

@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link'; // fallback
 import LinkNext from 'next/link';
+import Image from 'next/image';
 import { 
   Heart, 
   Baby, 
-  ShieldCheck, 
+  Activity, 
   Stethoscope, 
   Sparkles, 
   Clock, 
@@ -17,62 +17,62 @@ import {
 } from 'lucide-react';
 
 export default function LayananPage() {
-  const [activeCategory, setActiveCategory] = useState<'semua' | 'ibu' | 'anak' | 'fasilitas'>('semua');
+  const [activeCategory, setActiveCategory] = useState<'semua' | 'ibuAnak' | 'jantung' | 'endokrin'>('semua');
 
   const services = [
     {
       id: 1,
-      category: 'ibu',
+      category: 'ibuAnak',
       icon: <Heart className="text-rose-500" size={28} />,
-      title: "Persalinan Metode ERACS",
-      description: "Teknik operasi caesar dengan pemulihan lebih cepat, rasa nyeri minim, dan memungkinkan ibu langsung berinteraksi dengan bayi.",
-      features: ["Bisa duduk/berjalan lebih cepat", "Nyeri pasca operasi minimal", "Pendampingan dokter anestesi senior"],
-      badge: "Populer"
-    },
-    {
-      id: 2,
-      category: 'ibu',
-      icon: <Sparkles className="text-amber-500" size={28} />,
-      title: "Pemeriksaan USG 4D Live",
-      description: "Melihat wajah dan gerakan janin secara nyata dan jelas, lengkap dengan evaluasi organ dalam oleh Dokter Spesialis OG.",
-      features: ["Cetak foto 4D berwarna", "Video rekaman janin", "Konsultasi kondisi janin terpadu"],
+      title: "Pemeriksaan Kebidanan & USG 4D",
+      description: "Pelayanan kesehatan ibu hamil, pemantauan janin dengan USG 2D & 4D, serta pemeriksaan kebidanan lengkap oleh Dokter Spesialis Obsgyn.",
+      features: ["Pemeriksaan USG 2D & 4D Live", "Pemeriksaan CTG Janin", "Konsultasi Kehamilan & Kandungan"],
       badge: "Unggulan"
     },
     {
-      id: 3,
-      category: 'anak',
+      id: 2,
+      category: 'ibuAnak',
       icon: <Baby className="text-sky-500" size={28} />,
-      title: "Klinik Tumbuh Kembang Anak",
-      description: "Layanan pemantauan motorik, sensorik, dan wicara buah hati didampingi tim dokter spesialis anak & terapis berpengalaman.",
-      features: ["Skrining autisme & ADHD", "Terapi wicara & okupasi", "Konsultasi nutrisi & gizi anak"],
-      badge: null
+      title: "Klinik Spesialis Anak & NICU",
+      description: "Pemeriksaan kesehatan bayi, anak, dan remaja serta fasilitas perawatan intensif bayi baru lahir (NICU) & Perinatologi.",
+      features: ["Tim Dokter Spesialis Anak", "Ruang Perinatologi & NICU Steril", "Persalinan VK & PONEK 24 Jam"],
+      badge: "Fasilitas Kritis"
+    },
+    {
+      id: 3,
+      category: 'jantung',
+      icon: <Activity className="text-red-500" size={28} />,
+      title: "Diagnostik Non-Invasif Jantung",
+      description: "Pencegahan dan pengobatan penyakit jantung & pembuluh darah dengan teknologi pemeriksaan diagnostik non-invasif modern.",
+      features: ["Echocardiography (USG Jantung)", "Treadmill Test", "Pemeriksaan EKG Standar"],
+      badge: "Spesialis"
     },
     {
       id: 4,
-      category: 'anak',
-      icon: <Stethoscope className="text-indigo-500" size={28} />,
-      title: "Imunisasi & Vaksinasi Lengkap",
-      description: "Pemberian vaksin dasar hingga lanjutan dengan rantai dingin (cold-chain) terjamin untuk menjaga efektivitas vaksin.",
-      features: ["Vaksin impor & nasional", "Ruang tunggu anak terpisah", "Buku rekam imunisasi digital"],
+      category: 'jantung',
+      icon: <Clock className="text-indigo-500" size={28} />,
+      title: "Terapi EECP & Holter Monitoring",
+      description: "Layanan evaluasi dan terapi rawat jalan untuk menjaga serta memulihkan kinerja sistem pembuluh darah dan jantung.",
+      features: ["EECP (Enhanced External Counterpulsation)", "Holter Monitoring 24 Jam", "Spesialis Jantung & Pembuluh Darah"],
       badge: null
     },
     {
       id: 5,
-      category: 'fasilitas',
-      icon: <ShieldCheck className="text-emerald-500" size={28} />,
-      title: "Ruang Perawatan NICU & PICU",
-      description: "Unit perawatan intensif khusus untuk bayi prematur/kritis (NICU) dan anak-anak (PICU) dengan pemantauan 24 jam.",
-      features: ["Inkubator canggih & ventilator", "Tim medis siaga 24 jam", "Akses kontrol steril ketat"],
-      badge: "Fasilitas Kritis"
+      category: 'endokrin',
+      icon: <Stethoscope className="text-emerald-500" size={28} />,
+      title: "Klinik Diabetes & Metabolik",
+      description: "Penanganan sub-spesialistik untuk pencegahan, pengobatan, dan pengelolaan Diabetes Melitus serta gangguan metabolik.",
+      features: ["Spesialis Penyakit Dalam (Sp.PD-KEMD)", "Skrining & Tata Laksana Diabetes", "Konsultasi Edukasi & Gizi"],
+      badge: null
     },
     {
       id: 6,
-      category: 'fasilitas',
-      icon: <Clock className="text-rose-600" size={28} />,
-      title: "IGD Ibu & Anak 24 Jam",
-      description: "Penanganan kegawatdaruratan kebidanan dan anak secara cepat dan tepat oleh tim respon cepat.",
-      features: ["Ambulans jemputan siaga", "Kamar tindakan darurat khusus", "Dokter jaga siaga di tempat"],
-      badge: "24/7 Siaga"
+      category: 'endokrin',
+      icon: <Sparkles className="text-amber-500" size={28} />,
+      title: "Klinik Gangguan Tiroid & Hormonal",
+      description: "Pelayanan diagnostik dan terapi komprehensif untuk masalah kelenjar tiroid (Hipertiroid/Hipotiroid) serta sistem hormon.",
+      features: ["Evaluasi Fungsi Kelenjar Tiroid", "Pemeriksaan Laboratorium Penunjang", "Pendampingan Medis Berkelanjutan"],
+      badge: null
     }
   ];
 
@@ -90,9 +90,14 @@ export default function LayananPage() {
             <ArrowLeft size={18} /> Kembali ke Beranda
           </LinkNext>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-rose-500 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
-              <Heart className="fill-current" size={16} />
-            </div>
+            <Image 
+              src="/images/logo.png" 
+              alt="Logo RSIA Kirana" 
+              width={32}
+              height={32}
+              className="object-contain"
+              priority
+            />
             <span className="font-bold text-slate-900 tracking-tight text-sm">RSIA KIRANA</span>
           </div>
         </div>
@@ -106,7 +111,7 @@ export default function LayananPage() {
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3">Layanan Medis & Fasilitas Unggulan</h1>
           <p className="text-slate-600 text-sm sm:text-base mt-3 max-w-2xl mx-auto">
-            Didedikasikan khusus untuk kenyamanan dan keselamatan Ibu serta Buah Hati dengan penanganan medis berbasis teknologi modern.
+            Didedikasikan untuk memberikan pelayanan kesehatan berkualitas tinggi bagi Ibu, Anak, serta Pelayanan Spesialis Jantung dan Endokrin.
           </p>
         </div>
       </section>
@@ -118,9 +123,9 @@ export default function LayananPage() {
         <div className="flex justify-center flex-wrap gap-2 mb-10">
           {[
             { id: 'semua', label: 'Semua Layanan' },
-            { id: 'ibu', label: 'Kesehatan Ibu & Kandungan' },
-            { id: 'anak', label: 'Kesehatan & Tumbuh Kembang Anak' },
-            { id: 'fasilitas', label: 'Fasilitas & Intensif' },
+            { id: 'ibuAnak', label: 'Kesehatan Ibu & Anak' },
+            { id: 'jantung', label: 'Pelayanan Jantung' },
+            { id: 'endokrin', label: 'Pelayanan Endokrin' },
           ].map((tab) => (
             <button
               key={tab.id}

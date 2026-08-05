@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
-  Heart, 
   Search, 
   Calendar, 
   Clock, 
@@ -207,6 +207,32 @@ export default function DokterPage() {
     },
   ];
 
+  // Helper untuk mengecek apakah hari yang dipilih cocok dengan string jadwal
+  const isDayMatching = (scheduleDays: string, targetDay: string) => {
+    if (targetDay === 'semua') return true;
+    
+    const daysArr = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'];
+    const targetIndex = daysArr.indexOf(targetDay.toLowerCase());
+    const lowerSchedule = scheduleDays.toLowerCase();
+
+    if (lowerSchedule.includes('setiap hari')) return true;
+    if (lowerSchedule.includes(targetDay.toLowerCase())) return true;
+
+    // Handle format "Senin - Jumat" / "Senin - Rabu"
+    if (lowerSchedule.includes('-')) {
+      const parts = lowerSchedule.split('-').map(s => s.trim());
+      if (parts.length === 2) {
+        const startIndex = daysArr.findIndex(d => parts[0].includes(d));
+        const endIndex = daysArr.findIndex(d => parts[1].includes(d));
+        if (startIndex !== -1 && endIndex !== -1 && targetIndex >= startIndex && targetIndex <= endIndex) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
   // Filter logic
   const filteredDoctors = doctors.filter((doc) => {
     const matchesSearch = doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -214,9 +240,7 @@ export default function DokterPage() {
     
     const matchesCategory = selectedCategory === 'semua' || doc.category === selectedCategory;
 
-    const matchesDay = selectedDay === 'semua' || doc.schedules.some(s => 
-      s.days.toLowerCase().includes(selectedDay.toLowerCase()) || s.days.toLowerCase().includes('setiap hari')
-    );
+    const matchesDay = selectedDay === 'semua' || doc.schedules.some(s => isDayMatching(s.days, selectedDay));
 
     return matchesSearch && matchesCategory && matchesDay;
   });
@@ -231,16 +255,21 @@ export default function DokterPage() {
             <ArrowLeft size={18} /> Kembali ke Beranda
           </Link>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-rose-500 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
-              <Heart className="fill-current" size={16} />
-            </div>
+            <Image 
+              src="/images/logo.png" 
+              alt="Logo RSIA Kirana" 
+              width={32}
+              height={32}
+              className="object-contain"
+              priority
+            />
             <span className="font-bold text-slate-900 tracking-tight text-sm">RSIA KIRANA</span>
           </div>
         </div>
       </header>
 
       {/* --- HERO HEADER --- */}
-      <section className="bg-gradient-to-b from-rose-50 to-slate-50 py-12 border-b border-rose-100/50">
+      <section className="bg-linear-to-b from-rose-50 to-slate-50 py-12 border-b border-rose-100/50">
         <div className="max-w-4xl mx-auto text-center px-4">
           <span className="bg-rose-100 text-rose-700 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wider">
             Tim Dokter Profesional

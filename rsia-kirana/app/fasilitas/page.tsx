@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Heart, 
   ArrowLeft, 
@@ -146,9 +147,14 @@ export default function FasilitasPage() {
             <ArrowLeft size={18} /> Kembali ke Beranda
           </Link>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-rose-500 rounded-full flex items-center justify-center text-white font-bold shadow-sm">
-              <Heart className="fill-current" size={16} />
-            </div>
+            <Image 
+              src="/images/logo.png" 
+              alt="Logo RSIA Kirana" 
+              width={32}
+              height={32}
+              className="object-contain"
+              priority
+            />
             <span className="font-bold text-slate-900 tracking-tight text-sm">RSIA KIRANA</span>
           </div>
         </div>

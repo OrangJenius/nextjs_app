@@ -46,6 +46,7 @@ export default function Home() {
             <Link href="/layanan" className="hover:text-rose-600 transition-colors">Layanan Unggulan</Link>
             <Link href="/dokter" className="hover:text-rose-600 transition-colors">Jadwal Dokter</Link>
             <Link href="/fasilitas" className="hover:text-rose-600 transition-colors">Fasilitas</Link>
+            <Link href="/aboutus" className="hover:text-rose-600 transition-colors">Tentang Kami</Link>
           </nav>
 
           {/* CTA Button */}
@@ -93,6 +94,7 @@ export default function Home() {
                     alt="Mitra Asuransi RSIA Kirana" 
                     fill
                     className="object-contain"
+                    loading='eager'
                   />
                 </div>
               </div>
@@ -110,35 +112,41 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center mb-6">
-                <Baby size={24} />
+            <Link href="/layanan"> 
+              <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-all">
+                <div className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center mb-6">
+                  <Baby size={24} />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">Pelayanan Kesehatan Ibu dan Anak</h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  RSIA Kirana menyediakan pelayanan kesehatan kepada ibu dan anak dengan memberikan tindakan medis dan pengobatan lengkap pada ibu hamil, bayi, anak dan remaja.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Pelayanan Kesehatan Ibu dan Anak</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                RSIA Kirana menyediakan pelayanan kesehatan kepada ibu dan anak dengan memberikan tindakan medis dan pengobatan lengkap pada ibu hamil, bayi, anak dan remaja.
-              </p>
-            </div>
+            </Link>
 
-            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center mb-6">
-                <Heart size={24} />
+            <Link href="/layanan">
+              <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-all">
+                <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center mb-6">
+                  <Heart size={24} />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">Pelayanan Jantung</h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  RSIA Kirana menyediakan pelayanan untuk pencegahan dan pengobatan penyakit jantung dan pembuluh darah baik secara kuantitas maupun kualitas khususnya melalui pelayanan Diagnostik Non-Invasif: Echocardiografi, Holter Monitoring, Treadmill Test, dan EECP.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Pelayanan Jantung</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                RSIA Kirana menyediakan pelayanan untuk pencegahan dan pengobatan penyakit jantung dan pembuluh darah baik secara kuantitas maupun kualitas khususnya melalui pelayanan Diagnostik Non-Invasif: Echocardiografi, Holter Monitoring, Treadmill Test, dan EECP.
-              </p>
-            </div>
-
-            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-all">
-              <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
-                <ShieldCheck size={24} />
+            </Link>
+            
+            <Link href="/layanan">
+              <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-all">
+                <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
+                  <ShieldCheck size={24} />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">Pelayanan Endokrin</h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  RSIA Kirana menyediakan pelayanan sub-spesialistik untuk pencegahan dan penanganan penyakit diabetes melitus, tiroid, dan gangguan metabolik lainnya.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Pelayanan Endokrin</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                RSIA Kirana menyediakan pelayanan sub-spesialistik untuk pencegahan dan penanganan penyakit diabetes melitus, tiroid, dan gangguan metabolik lainnya.
-              </p>
-            </div>
+            </Link>
           </div>
         </div>
       </section>
