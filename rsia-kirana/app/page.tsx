@@ -47,6 +47,7 @@ export default function Home() {
             <Link href="/dokter" className="hover:text-rose-600 transition-colors">Jadwal Dokter</Link>
             <Link href="/fasilitas" className="hover:text-rose-600 transition-colors">Fasilitas</Link>
             <Link href="/aboutus" className="hover:text-rose-600 transition-colors">Tentang Kami</Link>
+            <Link href="/events" className="hover:text-rose-600 transition-colors">Events</Link>
           </nav>
 
           {/* CTA Button */}

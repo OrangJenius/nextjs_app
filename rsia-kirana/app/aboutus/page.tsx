@@ -47,7 +47,7 @@ export default function AboutPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-rose-50 via-white to-slate-50 pt-12 pb-16 border-b border-rose-100/60">
+      <section className="bg-linear-to-b from-rose-50 via-white to-slate-50 pt-12 pb-16 border-b border-rose-100/60">
         <div className="max-w-5xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 bg-rose-100 text-rose-700 text-xs px-3.5 py-1.5 rounded-full font-semibold uppercase tracking-wider mb-3">
             <h1>Profile Rumah Sakit</h1>
@@ -296,7 +296,7 @@ export default function AboutPage() {
 
       {/* Call to Action */}
       <section className="max-w-5xl mx-auto px-4 mt-12">
-        <div className="bg-gradient-to-r from-rose-500 to-rose-600 rounded-3xl p-8 text-white text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md">
+        <div className="bg-linear-to-r from-rose-500 to-rose-600 rounded-3xl p-8 text-white text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md">
           <div>
             <h3 className="text-xl font-bold">Butuh Layanan Kesehatan atau Konsultasi?</h3>
             <p className="text-rose-100 text-xs sm:text-sm mt-1">
