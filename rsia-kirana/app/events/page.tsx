@@ -47,8 +47,7 @@ export default function EventsPage() {
             Kegiatan & Program Komunitas
           </h1>
           <p className="text-slate-600 text-sm sm:text-base max-w-xl mx-auto mt-3">
-            Ikuti berbagai seminar kesehatan, workshop orang tua, senam hamil, dan program edukasi
-            kesehatan ibu & anak.
+            Lihat kegiatan-kegiatan RSIA Kirana
           </p>
         </div>
       </section>
