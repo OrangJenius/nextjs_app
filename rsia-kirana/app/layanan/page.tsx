@@ -13,11 +13,11 @@ import {
   CheckCircle2, 
   ArrowLeft, 
   PhoneCall, 
-  Calendar 
+  Calendar
 } from 'lucide-react';
 
 export default function LayananPage() {
-  const [activeCategory, setActiveCategory] = useState<'semua' | 'ibuAnak' | 'jantung' | 'endokrin'>('semua');
+  const [activeCategory, setActiveCategory] = useState<'semua' | 'ibuAnak' | 'jantung' | 'endokrin' | 'mcu'>('semua');
 
   const services = [
     {
@@ -76,9 +76,59 @@ export default function LayananPage() {
     }
   ];
 
+  // --- DATA PAKET GENERAL MEDICAL CHECK UP (dari brosur) ---
+  const mcuPackages = [
+    {
+      id: 'standar',
+      name: 'Standar',
+      price: '355.000',
+      features: [
+        'Pemeriksaan Darah Lengkap',
+        'Pemeriksaan Gula Darah Puasa',
+        'Pemeriksaan Asam Urat',
+        'Pemeriksaan Kolesterol Total',
+        'Konsultasi dan Pemeriksaan Fisik Dokter'
+      ],
+      highlight: false
+    },
+    {
+      id: 'gold',
+      name: 'Gold',
+      price: '795.000',
+      features: [
+        'Pemeriksaan Darah Lengkap',
+        'Pemeriksaan Gula Darah Puasa',
+        'Pemeriksaan Asam Urat',
+        'EKG (Rekam Jantung)',
+        'Profil Lipid (Kolesterol Total, LDL-HDL-Trigliserida)',
+        'Urinalisis',
+        'Konsultasi dan Pemeriksaan Fisik Dokter'
+      ],
+      highlight: true
+    },
+    {
+      id: 'platinum',
+      name: 'Platinum',
+      price: '1.250.000',
+      features: [
+        'Pemeriksaan Darah Lengkap',
+        'Pemeriksaan Gula Darah Puasa',
+        'Pemeriksaan Asam Urat',
+        'EKG (Rekam Jantung)',
+        'Profil Lipid (Kolesterol Total, LDL-HDL-Trigliserida)',
+        'Pemeriksaan Fungsi Hati (SGOT, SGPT)',
+        'Pemeriksaan Fungsi Ginjal (Ureum, Kreatinin)',
+        'Konsultasi dan Pemeriksaan Fisik Dokter'
+      ],
+      highlight: false
+    }
+  ];
+
   const filteredServices = activeCategory === 'semua' 
     ? services 
     : services.filter(s => s.category === activeCategory);
+
+  const showMcu = activeCategory === 'semua' || activeCategory === 'mcu';
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-20">
@@ -126,6 +176,7 @@ export default function LayananPage() {
             { id: 'ibuAnak', label: 'Kesehatan Ibu & Anak' },
             { id: 'jantung', label: 'Pelayanan Jantung' },
             { id: 'endokrin', label: 'Pelayanan Endokrin' },
+            { id: 'mcu', label: 'Medical Check Up' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -142,48 +193,156 @@ export default function LayananPage() {
         </div>
 
         {/* --- SERVICE CARDS GRID --- */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredServices.map((service) => (
-            <div 
-              key={service.id} 
-              className="bg-white rounded-3xl p-7 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden"
-            >
-              {service.badge && (
-                <span className="absolute top-4 right-4 bg-rose-50 text-rose-600 border border-rose-100 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase">
-                  {service.badge}
-                </span>
-              )}
-
-              <div>
-                <div className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mb-5">
-                  {service.icon}
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">{service.title}</h3>
-                <p className="text-slate-600 text-xs leading-relaxed mb-6">
-                  {service.description}
-                </p>
-
-                {/* Features List */}
-                <div className="space-y-2 border-t border-slate-100 pt-4 mb-6">
-                  {service.features.map((feat, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-xs text-slate-700">
-                      <CheckCircle2 size={14} className="text-emerald-500 shrink-0" />
-                      <span>{feat}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Action Link inside Card */}
-              <LinkNext 
-                href="/janji-temu" 
-                className="w-full bg-slate-50 hover:bg-rose-50 hover:text-rose-600 text-slate-700 text-center font-semibold text-xs py-2.5 rounded-xl border border-slate-200 hover:border-rose-200 transition-all block"
+        {filteredServices.length > 0 && (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredServices.map((service) => (
+              <div 
+                key={service.id} 
+                className="bg-white rounded-3xl p-7 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden"
               >
-                Reservasi Layanan Ini
-              </LinkNext>
+                {service.badge && (
+                  <span className="absolute top-4 right-4 bg-rose-50 text-rose-600 border border-rose-100 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase">
+                    {service.badge}
+                  </span>
+                )}
+
+                <div>
+                  <div className="w-14 h-14 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mb-5">
+                    {service.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">{service.title}</h3>
+                  <p className="text-slate-600 text-xs leading-relaxed mb-6">
+                    {service.description}
+                  </p>
+
+                  {/* Features List */}
+                  <div className="space-y-2 border-t border-slate-100 pt-4 mb-6">
+                    {service.features.map((feat, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-xs text-slate-700">
+                        <CheckCircle2 size={14} className="text-emerald-500 shrink-0" />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action Link inside Card */}
+                <LinkNext 
+                  href="/janji-temu" 
+                  className="w-full bg-slate-50 hover:bg-rose-50 hover:text-rose-600 text-slate-700 text-center font-semibold text-xs py-2.5 rounded-xl border border-slate-200 hover:border-rose-200 transition-all block"
+                >
+                  Reservasi Layanan Ini
+                </LinkNext>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* --- GENERAL MEDICAL CHECK UP SECTION (dari brosur) --- */}
+        {showMcu && (
+          <div className={filteredServices.length > 0 ? 'mt-20' : ''}>
+            <div className="text-center max-w-2xl mx-auto mb-10">
+              <span className="bg-rose-100 text-rose-700 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wider">
+                Paket Kesehatan
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3">
+                General Medical Check Up
+              </h2>
+              <p className="text-slate-600 text-sm mt-2">di RSIA Kirana Manado</p>
             </div>
-          ))}
-        </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {mcuPackages.map((pkg) => (
+                <div
+                  key={pkg.id}
+                  className={`rounded-3xl p-7 border shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden ${
+                    pkg.highlight
+                      ? 'bg-gradient-to-b from-rose-500 to-pink-600 text-white border-rose-500 scale-[1.02]'
+                      : 'bg-white text-slate-800 border-slate-100'
+                  }`}
+                >
+                  <div>
+                    <span
+                      className={`inline-block text-[10px] font-extrabold px-3 py-1 rounded-full uppercase mb-4 ${
+                        pkg.highlight
+                          ? 'bg-white text-rose-600'
+                          : 'bg-rose-50 text-rose-600 border border-rose-100'
+                      }`}
+                    >
+                      {pkg.name}
+                    </span>
+
+                    <p className={`text-[10px] italic ${pkg.highlight ? 'text-rose-100' : 'text-slate-400'}`}>
+                      Harga Spesial
+                    </p>
+                    <p className="text-2xl font-extrabold mb-5">
+                      Rp {pkg.price}
+                      <span className="text-xs font-medium">,-</span>
+                    </p>
+
+                    <div
+                      className={`space-y-2 border-t pt-4 mb-6 ${
+                        pkg.highlight ? 'border-rose-300/50' : 'border-slate-100'
+                      }`}
+                    >
+                      {pkg.features.map((feat, idx) => (
+                        <div key={idx} className="flex items-start gap-2 text-xs">
+                          <CheckCircle2
+                            size={14}
+                            className={`shrink-0 mt-0.5 ${pkg.highlight ? 'text-white' : 'text-emerald-500'}`}
+                          />
+                          <span>{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <LinkNext
+                    href="/janji-temu"
+                    className={`w-full text-center font-semibold text-xs py-2.5 rounded-xl border transition-all block ${
+                      pkg.highlight
+                        ? 'bg-white text-rose-600 border-white hover:bg-rose-50'
+                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200'
+                    }`}
+                  >
+                    Book Now
+                  </LinkNext>
+                </div>
+              ))}
+            </div>
+
+            {/* Info kontak lanjutan MCU */}
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 text-xs text-slate-600">
+              <span className="font-semibold text-slate-700">Informasi lebih lanjut hubungi:</span>
+              <div className="flex items-center gap-3">
+                <a
+                  href="https://wa.me/6281388888898"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1.5 bg-rose-50 text-rose-600 px-3 py-1.5 rounded-full hover:bg-rose-100 transition-all"
+                >
+                  <PhoneCall size={14} /> 0813-8888-8898
+                </a>
+                <a
+                  href="https://instagram.com/rsiakirana_manado"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1.5 bg-rose-50 text-rose-600 px-3 py-1.5 rounded-full hover:bg-rose-100 transition-all"
+                >
+                  @rsiakirana_manado
+                </a>
+                <a
+                  href="https://facebook.com/RSIAKiranaManado"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1.5 bg-rose-50 text-rose-600 px-3 py-1.5 rounded-full hover:bg-rose-100 transition-all"
+                >
+                  RSIA Kirana Manado
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* --- CALL TO ACTION BANNER --- */}
         <div className="mt-16 bg-gradient-to-r from-rose-500 to-pink-600 rounded-3xl p-8 sm:p-12 text-white shadow-xl flex flex-col lg:flex-row items-center justify-between gap-8">
