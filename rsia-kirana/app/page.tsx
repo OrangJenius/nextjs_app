@@ -1,12 +1,26 @@
-import React from 'react';
-import { Heart, Calendar, Clock, Phone, MapPin, UserCheck, ChevronRight, Baby, ShieldCheck } from 'lucide-react';
+'use client';
+
+import React, { useState } from 'react';
+import { Heart, Calendar, Clock, Phone, MapPin, UserCheck, ChevronRight, Baby, ShieldCheck, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const navLinks = [
+    { href: "/", label: "Beranda" },
+    { href: "/layanan", label: "Layanan Unggulan" },
+    { href: "/dokter", label: "Jadwal Dokter" },
+    { href: "/fasilitas", label: "Fasilitas" },
+    { href: "/aboutus", label: "Tentang Kami" },
+    { href: "/events", label: "Events" },
+    { href: "/berita", label: "Berita" },
+  ];
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans">
-      
+
       {/* --- TOP BAR INFO --- */}
       <div className="bg-rose-600 text-white text-xs sm:text-sm py-2 px-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-2">
@@ -26,9 +40,9 @@ export default function Home() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
             <div className="relative w-12 h-12 shrink-0">
-              <Image 
-                src="/images/logo.png" 
-                alt="Logo RSIA Kirana" 
+              <Image
+                src="/images/logo.png"
+                alt="Logo RSIA Kirana"
                 fill
                 className="object-contain"
                 priority
@@ -40,25 +54,56 @@ export default function Home() {
             </div>
           </Link>
 
-          {/* Navigation Links */}
+          {/* Desktop Navigation Links */}
           <nav className="hidden md:flex space-x-8 text-sm font-semibold text-slate-600">
-            <Link href="/" className="hover:text-rose-600 transition-colors">Beranda</Link>
-            <Link href="/layanan" className="hover:text-rose-600 transition-colors">Layanan Unggulan</Link>
-            <Link href="/dokter" className="hover:text-rose-600 transition-colors">Jadwal Dokter</Link>
-            <Link href="/fasilitas" className="hover:text-rose-600 transition-colors">Fasilitas</Link>
-            <Link href="/aboutus" className="hover:text-rose-600 transition-colors">Tentang Kami</Link>
-            <Link href="/events" className="hover:text-rose-600 transition-colors">Events</Link>
-            <Link href="/berita" className="hover:text-rose-600 transition-colors">Berita</Link>
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="hover:text-rose-600 transition-colors">
+                {link.label}
+              </Link>
+            ))}
           </nav>
 
-          {/* CTA Button */}
-          <Link 
-            href="/janji-temu" 
-            className="bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-sm hover:shadow-md transition-all flex items-center gap-2"
+          {/* Desktop CTA Button */}
+          <Link
+            href="/janji-temu"
+            className="hidden md:flex bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-sm hover:shadow-md transition-all items-center gap-2"
           >
             <Calendar size={16} /> Buat Janji Temu
           </Link>
+
+          {/* Mobile Hamburger Button */}
+          <button
+            className="md:hidden p-2 text-slate-700 hover:text-rose-600 transition-colors"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
         </div>
+
+        {/* Mobile Menu Panel */}
+        {menuOpen && (
+          <div className="md:hidden bg-white border-t border-rose-100 px-4 py-4 space-y-1 shadow-lg">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className="block text-sm font-semibold text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg px-3 py-2.5 transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <Link
+              href="/janji-temu"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center justify-center gap-2 bg-rose-500 hover:bg-rose-600 text-white px-5 py-3 rounded-full text-sm font-semibold mt-3"
+            >
+              <Calendar size={16} /> Buat Janji Temu
+            </Link>
+          </div>
+        )}
       </header>
 
       {/* --- HERO SECTION --- */}
@@ -93,7 +138,7 @@ export default function Home() {
                 <div className="relative w-full h-full z-10">
                   <Image
                     src="/images/partners.png"
-                    alt="Mitra Asuransi RSIA Kirana" 
+                    alt="Mitra Asuransi RSIA Kirana"
                     fill
                     className="object-contain"
                     loading='eager'
@@ -114,7 +159,7 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Link href="/layanan"> 
+            <Link href="/layanan">
               <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-all">
                 <div className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center mb-6">
                   <Baby size={24} />
@@ -137,7 +182,7 @@ export default function Home() {
                 </p>
               </div>
             </Link>
-            
+
             <Link href="/layanan">
               <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-all">
                 <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
@@ -179,7 +224,7 @@ export default function Home() {
                 </div>
                 <h4 className="font-bold text-slate-900 text-sm">{doc.name}</h4>
                 <p className="text-xs text-rose-500 font-medium mt-1 mb-4">{doc.spec}</p>
-                <Link 
+                <Link
                   href="/dokter"
                   className="block text-center w-full py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-semibold transition-colors"
                 >
