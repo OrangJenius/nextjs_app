@@ -17,14 +17,15 @@ interface Doctor {
   id: number;
   name: string;
   specialty: string;
-  category: 'kebidanan' | 'anak' | 'penyakitDalam' | 'endokrin' | 'jantung' | 'saraf' | 'rehabMedik' | 'bedah';
+  category: 'kebidanan' | 'anak' | 'penyakitDalam' | 'endokrin' | 'jantung' | 'saraf' | 'rehabMedik' | 'bedah' | 'anastesi';
   experience: string;
   almamater: string;
   image?: string;
-  schedules: {
+  schedules?: {
     days: string;
     hours: string;
   }[];
+  bookable?: boolean; // default true — set false for doctors without a regular schedule
 }
 
 export default function DokterPage() {
@@ -138,18 +139,6 @@ export default function DokterPage() {
     },
     {
       id: 9,
-      name: "dr. Joel Imanuel Kekenusa, Sp.PD",
-      specialty: "Spesialis Penyakit Dalam",
-      category: "penyakitDalam",
-      experience: "10 Tahun",
-      almamater: "Universitas Sam Ratulangi",
-      // no photo uploaded for this doctor yet — falls back to icon
-      schedules: [
-        { days: "Senin - Selasa", hours: "16:00 - 17:00 WITA" },
-      ]
-    },
-    {
-      id: 10,
       name: "dr. Bisuk P. Sedli, Sp.PD-KEMD",
       specialty: "Spesialis Penyakit Dalam",
       category: "endokrin",
@@ -161,7 +150,7 @@ export default function DokterPage() {
       ]
     },
     {
-      id: 11,
+      id: 10,
       name: "Prof. Dr. dr. Starry H. Rampengan, Sp.JP(K)",
       specialty: "Subspesialis Intervensi Kardiovaskular",
       category: "jantung",
@@ -174,7 +163,7 @@ export default function DokterPage() {
       ]
     },
     {
-      id: 12,
+      id: 11,
       name: "Dr. dr. Sekplin A. S. Sekeon, Sp.N(K), FMIN, MPH",
       specialty: "Spesialis Saraf",
       category: "saraf",
@@ -186,7 +175,7 @@ export default function DokterPage() {
       ]
     },
     {
-      id: 13,
+      id: 12,
       name: "dr. Florensia B. Tewal, Sp.KFR",
       specialty: "Spesialis Kedokteran Fisik dan Rehabilitasi",
       category: "rehabMedik",
@@ -198,7 +187,7 @@ export default function DokterPage() {
       ]
     },
     {
-      id: 14,
+      id: 13,
       name: "dr. Leonardo Verdy Sagay, Sp.B",
       specialty: "Spesialis Bedah",
       category: "bedah",
@@ -210,7 +199,7 @@ export default function DokterPage() {
       ]
     },
     {
-      id: 15,
+      id: 14,
       name: "dr. Pinkan Johana Lintong, Sp.B",
       specialty: "Spesialis Bedah",
       category: "bedah",
@@ -220,6 +209,17 @@ export default function DokterPage() {
       schedules: [
         { days: "Senin & Rabu", hours: "08:00 - 10:00 WITA" },
       ]
+    },
+    {
+      id: 15,
+      name: "dr. Praisy Gladys Intan Pardede, Sp.An-TI",
+      specialty: "Spesialis Anastesi",
+      category: "anastesi",
+      experience: "10 Tahun",
+      almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/praisy-pardede.png",
+      // Dokter anastesi — bertugas mendampingi tindakan operasi, bukan praktik rawat jalan reguler
+      bookable: false,
     },
   ];
 
@@ -256,7 +256,8 @@ export default function DokterPage() {
     
     const matchesCategory = selectedCategory === 'semua' || doc.category === selectedCategory;
 
-    const matchesDay = selectedDay === 'semua' || doc.schedules.some(s => isDayMatching(s.days, selectedDay));
+    const matchesDay = selectedDay === 'semua' || 
+                        (doc.schedules?.some(s => isDayMatching(s.days, selectedDay)) ?? false);
 
     return matchesSearch && matchesCategory && matchesDay;
   });
@@ -380,61 +381,80 @@ export default function DokterPage() {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredDoctors.map((doc) => (
-              <div 
-                key={doc.id}
-                className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
-              >
-                <div>
-                  {/* Doctor Profile Header */}
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-rose-100 bg-rose-50 flex items-center justify-center">
-                      {doc.image ? (
-                        <Image
-                          src={doc.image}
-                          alt={doc.name}
-                          width={64}
-                          height={64}
-                          className="w-full h-full object-cover object-top"
-                        />
+            {filteredDoctors.map((doc) => {
+              const isBookable = doc.bookable !== false && !!doc.schedules?.length;
+
+              return (
+                <div 
+                  key={doc.id}
+                  className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    {/* Doctor Profile Header */}
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-rose-100 bg-rose-50 flex items-center justify-center">
+                        {doc.image ? (
+                          <Image
+                            src={doc.image}
+                            alt={doc.name}
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-cover object-top"
+                          />
+                        ) : (
+                          <UserCheck size={32} className="text-rose-500" />
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-base leading-snug">{doc.name}</h3>
+                        <p className="text-xs text-rose-500 font-medium mt-1">{doc.specialty}</p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">Pengalaman: {doc.experience} • Alumni {doc.almamater}</p>
+                      </div>
+                    </div>
+
+                    {/* Schedule List */}
+                    <div className="bg-slate-50 rounded-2xl p-3.5 space-y-2 mb-6 border border-slate-100">
+                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1 flex items-center gap-1">
+                        <Clock size={12} /> Jadwal Praktik Regular
+                      </span>
+                      {doc.schedules && doc.schedules.length > 0 ? (
+                        doc.schedules.map((sch, idx) => (
+                          <div key={idx} className="flex justify-between items-center text-xs text-slate-700 font-medium">
+                            <span className="flex items-center gap-1.5">
+                              <Calendar size={12} className="text-rose-400" /> {sch.days}
+                            </span>
+                            <span className="bg-white px-2 py-0.5 rounded border border-slate-200 font-mono text-[11px] text-slate-600">
+                              {sch.hours}
+                            </span>
+                          </div>
+                        ))
                       ) : (
-                        <UserCheck size={32} className="text-rose-500" />
+                        <p className="text-xs text-slate-400 italic">
+                          Bertugas di tindakan operasi (on-call) — tidak menerima jadwal rawat jalan reguler.
+                        </p>
                       )}
                     </div>
-                    <div>
-                      <h3 className="font-bold text-slate-900 text-base leading-snug">{doc.name}</h3>
-                      <p className="text-xs text-rose-500 font-medium mt-1">{doc.specialty}</p>
-                      <p className="text-[11px] text-slate-400 mt-0.5">Pengalaman: {doc.experience} • Alumni {doc.almamater}</p>
-                    </div>
                   </div>
 
-                  {/* Schedule List */}
-                  <div className="bg-slate-50 rounded-2xl p-3.5 space-y-2 mb-6 border border-slate-100">
-                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1 flex items-center gap-1">
-                      <Clock size={12} /> Jadwal Praktik Regular
-                    </span>
-                    {doc.schedules.map((sch, idx) => (
-                      <div key={idx} className="flex justify-between items-center text-xs text-slate-700 font-medium">
-                        <span className="flex items-center gap-1.5">
-                          <Calendar size={12} className="text-rose-400" /> {sch.days}
-                        </span>
-                        <span className="bg-white px-2 py-0.5 rounded border border-slate-200 font-mono text-[11px] text-slate-600">
-                          {sch.hours}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                  {/* Booking Button */}
+                  {isBookable ? (
+                    <Link 
+                      href="/janji-temu"
+                      className="w-full bg-rose-500 hover:bg-rose-600 text-white font-semibold text-xs py-3 rounded-xl text-center transition-colors shadow-sm flex items-center justify-center gap-2"
+                    >
+                      <Calendar size={14} /> Buat Janji dengan Dokter Ini
+                    </Link>
+                  ) : (
+                    <a 
+                      href="wa.me/6281388888898"
+                      className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-xs py-3 rounded-xl text-center transition-colors flex items-center justify-center gap-2"
+                    >
+                      <PhoneCall size={14} /> Hubungi Rumah Sakit
+                    </a>
+                  )}
                 </div>
-
-                {/* Booking Button */}
-                <Link 
-                  href="/janji-temu"
-                  className="w-full bg-rose-500 hover:bg-rose-600 text-white font-semibold text-xs py-3 rounded-xl text-center transition-colors shadow-sm flex items-center justify-center gap-2"
-                >
-                  <Calendar size={14} /> Buat Janji dengan Dokter Ini
-                </Link>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
