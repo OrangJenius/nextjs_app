@@ -18,6 +18,29 @@ export default function Home() {
     { href: "/berita", label: "Berita" },
   ];
 
+  const featuredDoctors = [
+    {
+      name: "Prof. dr. Hermie Tendean, Sp.OG (K)",
+      spec: "Spesialis Kebidanan & Kandungan",
+      image: "/images/dokter/hermie-tendean.png",
+    },
+    {
+      name: "DR. dr. Novie H. Rampengan, Sp.A(K)",
+      spec: "Spesialis Anak",
+      image: "/images/dokter/novie-rampengan.png",
+    },
+    {
+      name: "dr. Meiske Runkat, Sp.OG",
+      spec: "Spesialis Kebidanan & Kandungan",
+      image: "/images/dokter/meiske-runkat.png",
+    },
+    {
+      name: "dr. Jane Metusala, Sp.A",
+      spec: "Spesialis Anak",
+      image: "/images/dokter/jane-metusala.png",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans">
 
@@ -212,15 +235,19 @@ export default function Home() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { name: "Prof. dr. Hermie Tendean, Sp.OG (K)", spec: "Spesialis Kebidanan & Kandungan" },
-              { name: "DR. dr. Novie H. Rampengan, Sp.A(K)", spec: "Spesialis Anak" },
-              { name: "dr. Meiske Runkat, Sp.OG", spec: "Spesialis Kebidanan & Kandungan" },
-              { name: "dr. Jane Metusala, Sp.A", spec: "Spesialis Anak" },
-            ].map((doc, idx) => (
+            {featuredDoctors.map((doc, idx) => (
               <div key={idx} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 text-center">
-                <div className="w-24 h-24 bg-slate-100 rounded-full mx-auto mb-4 flex items-center justify-center text-slate-400">
-                  <UserCheck size={40} />
+                <div className="relative w-24 h-24 bg-slate-100 rounded-full mx-auto mb-4 overflow-hidden flex items-center justify-center text-slate-400">
+                  {doc.image ? (
+                    <Image
+                      src={doc.image}
+                      alt={doc.name}
+                      fill
+                      className="object-cover object-top"
+                    />
+                  ) : (
+                    <UserCheck size={40} />
+                  )}
                 </div>
                 <h4 className="font-bold text-slate-900 text-sm">{doc.name}</h4>
                 <p className="text-xs text-rose-500 font-medium mt-1 mb-4">{doc.spec}</p>
