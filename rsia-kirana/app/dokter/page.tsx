@@ -20,6 +20,7 @@ interface Doctor {
   category: 'kebidanan' | 'anak' | 'penyakitDalam' | 'endokrin' | 'jantung' | 'saraf' | 'rehabMedik' | 'bedah';
   experience: string;
   almamater: string;
+  image?: string;
   schedules: {
     days: string;
     hours: string;
@@ -39,6 +40,7 @@ export default function DokterPage() {
       category: "anak",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/novie-rampengan.png",
       schedules: [
         { days: "Jumat", hours: "15:00 - 17:00 WITA" },
         { days: "Sabtu", hours: "14:30 - 17:30 WITA" }
@@ -51,6 +53,7 @@ export default function DokterPage() {
       category: "anak",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/jane-metusala.png",
       schedules: [
         { days: "Selasa", hours: "12:15 - 14:15 WITA" },
         { days: "Kamis", hours: "12:30 - 14:30 WITA" }
@@ -63,6 +66,7 @@ export default function DokterPage() {
       category: "anak",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/irene-maryauw.png",
       schedules: [
         { days: "Selasa", hours: "10:05 - 12:00 WITA" },
         { days: "Rabu", hours: "08:00 - 10:00 WITA" }
@@ -75,6 +79,7 @@ export default function DokterPage() {
       category: "kebidanan",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/meiske-runkat.png",
       schedules: [
         { days: "Senin - Jumat", hours: "10:00 - 12:00 WITA" },
       ]
@@ -86,6 +91,7 @@ export default function DokterPage() {
       category: "kebidanan",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/hermie-tendean.png",
       schedules: [
         { days: "Senin, Selasa, & Jumat", hours: "16:00 - 18:00 WITA" },
         { days: "Rabu", hours: "17:00 - 19:00 WITA" },
@@ -99,6 +105,7 @@ export default function DokterPage() {
       category: "kebidanan",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/royke-rattu.png",
       schedules: [
         { days: "Senin - Rabu", hours: "08:00 - 10:00 WITA" },
       ]
@@ -110,6 +117,7 @@ export default function DokterPage() {
       category: "penyakitDalam",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/arthur-rampengan.png",
       schedules: [
         { days: "Kamis", hours: "12:00 - 14:00 WITA" },
         { days: "Jumat", hours: "12:00 - 15:00 WITA & 16:30 - 18:00 WITA" },
@@ -123,6 +131,7 @@ export default function DokterPage() {
       category: "penyakitDalam",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/novita-tanasal.png",
       schedules: [
         { days: "Rabu", hours: "14:00 - 16:00 WITA" },
       ]
@@ -134,6 +143,7 @@ export default function DokterPage() {
       category: "penyakitDalam",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      // no photo uploaded for this doctor yet — falls back to icon
       schedules: [
         { days: "Senin - Selasa", hours: "16:00 - 17:00 WITA" },
       ]
@@ -145,6 +155,7 @@ export default function DokterPage() {
       category: "endokrin",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/bisuk-sedli.png",
       schedules: [
         { days: "Senin & Kamis", hours: "16:00 - 17:30 WITA" },
       ]
@@ -156,6 +167,7 @@ export default function DokterPage() {
       category: "jantung",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/starry-rampengan.png",
       schedules: [
         { days: "Senin - Jumat", hours: "20:00 - 22:00 WITA" },
         { days: "Sabtu", hours: "19:00 - 21:00 WITA" },
@@ -168,6 +180,7 @@ export default function DokterPage() {
       category: "saraf",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/sekplin-sekeon.png",
       schedules: [
         { days: "Selasa & Jumat", hours: "15:00 - 17:00 WITA" },
       ]
@@ -179,6 +192,7 @@ export default function DokterPage() {
       category: "rehabMedik",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/florensia-tewal.png",
       schedules: [
         { days: "Selasa & Kamis", hours: "16:00 - 17:00 WITA" },
       ]
@@ -190,6 +204,7 @@ export default function DokterPage() {
       category: "bedah",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/leonardo-sagay.png",
       schedules: [
         { days: "Selasa & Jumat", hours: "08:00 - 10:00 WITA" },
       ]
@@ -201,6 +216,7 @@ export default function DokterPage() {
       category: "bedah",
       experience: "10 Tahun",
       almamater: "Universitas Sam Ratulangi",
+      image: "/images/dokter/pinkan-lintong.png",
       schedules: [
         { days: "Senin & Rabu", hours: "08:00 - 10:00 WITA" },
       ]
@@ -372,8 +388,18 @@ export default function DokterPage() {
                 <div>
                   {/* Doctor Profile Header */}
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center shrink-0 border border-rose-100 font-bold">
-                      <UserCheck size={32} />
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-rose-100 bg-rose-50 flex items-center justify-center">
+                      {doc.image ? (
+                        <Image
+                          src={doc.image}
+                          alt={doc.name}
+                          width={64}
+                          height={64}
+                          className="w-full h-full object-cover object-top"
+                        />
+                      ) : (
+                        <UserCheck size={32} className="text-rose-500" />
+                      )}
                     </div>
                     <div>
                       <h3 className="font-bold text-slate-900 text-base leading-snug">{doc.name}</h3>
