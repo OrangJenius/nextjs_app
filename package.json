@@ -1,5 +1,9 @@
 {
   "dependencies": {
     "lucide-react": "^1.27.0"
-  }
+  },
+  "scripts": {
+     "build": "prisma generate && next build",
+     "postinstall": "prisma generate"
+   }
 }
