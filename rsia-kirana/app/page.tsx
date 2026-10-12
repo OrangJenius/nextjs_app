@@ -1,12 +1,99 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Heart, Calendar, Clock, Phone, MapPin, UserCheck, ChevronRight, Baby, ShieldCheck, Menu, X } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Heart, Calendar, Clock, Phone, MapPin, UserCheck, ChevronRight, Baby, ShieldCheck, Menu, X,
+  User, History, CalendarPlus, Users, LogOut,
+} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSession, signOut } from 'next-auth/react';
+
+// Menu akun untuk user yang sudah login
+const accountLinks = [
+  { href: '/riwayat', label: 'Riwayat Janji Temu', icon: History },
+  { href: '/janji-temu', label: 'Buat Janji Temu', icon: CalendarPlus },
+  { href: '/profile', label: 'Profil Pasien', icon: Users },
+];
+
+function ProfileMenu({ name }: { name: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Tutup dropdown saat klik di luar atau menekan Escape
+  useEffect(() => {
+    const onClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', onClickOutside);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onClickOutside);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, []);
+
+  return (
+    <div ref={ref} className="relative hidden md:block">
+      <button
+        onClick={() => setOpen(!open)}
+        aria-label="Menu akun"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
+          open
+            ? 'bg-rose-500 text-white border-rose-500'
+            : 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100'
+        }`}
+      >
+        <User size={20} />
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50"
+        >
+          <div className="px-4 py-3 border-b border-slate-100">
+            <p className="text-[11px] text-slate-400">Masuk sebagai</p>
+            <p className="text-sm font-bold text-slate-900 truncate">{name}</p>
+          </div>
+
+          <div className="py-1">
+            {accountLinks.map(({ href, label, icon: Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                role="menuitem"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-rose-50 hover:text-rose-600 transition-colors"
+              >
+                <Icon size={16} /> {label}
+              </Link>
+            ))}
+          </div>
+
+          <div className="border-t border-slate-100 pt-1">
+            <button
+              role="menuitem"
+              onClick={() => signOut({ callbackUrl: '/' })}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-rose-600 transition-colors"
+            >
+              <LogOut size={16} /> Keluar
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { data: session, status } = useSession();
 
   const navLinks = [
     { href: "/", label: "Beranda" },
@@ -86,13 +173,27 @@ export default function Home() {
             ))}
           </nav>
 
-          {/* Desktop CTA Button */}
-          <Link
-            href="/janji-temu"
-            className="hidden md:flex bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-sm hover:shadow-md transition-all items-center gap-2"
-          >
-            <Calendar size={16} /> Buat Janji Temu
-          </Link>
+          {/* Desktop: ikon profil (sudah login) atau tombol Buat Janji Temu (belum login) */}
+          {status === 'loading' ? (
+            <div className="hidden md:block w-10 h-10" aria-hidden="true" />
+          ) : session ? (
+            <ProfileMenu name={session.user?.name ?? 'Akun Saya'} />
+          ) : (
+            <div className="hidden md:flex items-center gap-4">
+              <Link
+                href="/login"
+                className="text-sm font-semibold text-slate-600 hover:text-rose-600 transition-colors"
+              >
+                Masuk
+              </Link>
+              <Link
+                href="/janji-temu"
+                className="bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-sm hover:shadow-md transition-all flex items-center gap-2"
+              >
+                <Calendar size={16} /> Buat Janji Temu
+              </Link>
+            </div>
+          )}
 
           {/* Mobile Hamburger Button */}
           <button
@@ -118,13 +219,47 @@ export default function Home() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/janji-temu"
-              onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center gap-2 bg-rose-500 hover:bg-rose-600 text-white px-5 py-3 rounded-full text-sm font-semibold mt-3"
-            >
-              <Calendar size={16} /> Buat Janji Temu
-            </Link>
+
+            {session ? (
+              <div className="pt-3 mt-3 border-t border-rose-100 space-y-1">
+                <p className="px-3 pb-1 text-xs text-slate-400">
+                  Masuk sebagai <strong className="text-slate-700">{session.user?.name}</strong>
+                </p>
+                {accountLinks.map(({ href, label, icon: Icon }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-3 text-sm font-semibold text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg px-3 py-2.5 transition-colors"
+                  >
+                    <Icon size={16} /> {label}
+                  </Link>
+                ))}
+                <button
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  className="w-full flex items-center gap-3 text-sm font-semibold text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg px-3 py-2.5 transition-colors"
+                >
+                  <LogOut size={16} /> Keluar
+                </button>
+              </div>
+            ) : status === 'loading' ? null : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="block text-sm font-semibold text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg px-3 py-2.5 transition-colors"
+                >
+                  Masuk
+                </Link>
+                <Link
+                  href="/janji-temu"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-center gap-2 bg-rose-500 hover:bg-rose-600 text-white px-5 py-3 rounded-full text-sm font-semibold mt-3"
+                >
+                  <Calendar size={16} /> Buat Janji Temu
+                </Link>
+              </>
+            )}
           </div>
         )}
       </header>

@@ -6,7 +6,6 @@ export default withAuth({
   },
 });
 
-// Tambahkan path lain yang perlu login di sini, misalnya '/akun/:path*'.
 export const config = {
-  matcher: ['/janji-temu/:path*'],
+  matcher: ['/janji-temu/:path*', '/riwayat/:path*', '/profil/:path*'],
 };

@@ -25,9 +25,9 @@ const HOSPITAL_WA_NUMBER = '6281388888898';
 
 interface Patient {
   id: number;
-  nama_pasien: string;
+  namaPasien: string;
   nik: string;
-  no_hp: string;
+  noHp: string;
   email: string | null;
 }
 
@@ -192,13 +192,13 @@ export default function JanjiTemuClient({ doctors }: { doctors: BookableDoctor[]
       'Halo Admin RSIA Kirana, saya ingin konfirmasi janji temu berikut:',
       '',
       `Kode Booking: ${code}`,
-      `Nama Pasien: ${patient.nama_pasien}`,
+      `Nama Pasien: ${patient.namaPasien}`,
       `Poli: ${CATEGORY_LABELS[formData.poli] ?? formData.poli}`,
       `Dokter: ${selectedDoctorObj?.name ?? '-'}`,
       `Tanggal: ${formData.tanggal} (${selectedDayName})`,
       `Jam Praktik: ${formData.jam}`,
       `Metode Pembayaran: ${formData.tipePembayaran.toUpperCase()}`,
-      `No. WhatsApp Pasien: ${patient.no_hp}`,
+      `No. WhatsApp Pasien: ${patient.noHp}`,
       '',
       'Mohon konfirmasinya, terima kasih.',
     ];
@@ -306,7 +306,7 @@ export default function JanjiTemuClient({ doctors }: { doctors: BookableDoctor[]
             </p>
 
             <div className="bg-slate-50 rounded-2xl p-4 mt-6 text-left text-xs space-y-2 border border-slate-100">
-              <p><strong>Nama Pasien:</strong> {selectedPatient?.nama_pasien}</p>
+              <p><strong>Nama Pasien:</strong> {selectedPatient?.namaPasien}</p>
               <p><strong>Dokter Tujuan:</strong> {selectedDoctorObj?.name}</p>
               <p><strong>Tanggal Kunjungan:</strong> {formData.tanggal} ({selectedDayName})</p>
               <p><strong>Jam Praktik:</strong> {formData.jam}</p>
@@ -315,7 +315,7 @@ export default function JanjiTemuClient({ doctors }: { doctors: BookableDoctor[]
 
             {selectedPatient && (
               <p className="text-xs text-slate-500 mt-6">
-                *Konfirmasi reservasi telah dikirimkan via WhatsApp ke nomor <strong className="text-slate-700">{selectedPatient.no_hp}</strong>.
+                *Konfirmasi reservasi telah dikirimkan via WhatsApp ke nomor <strong className="text-slate-700">{selectedPatient.noHp}</strong>.
               </p>
             )}
 
@@ -372,7 +372,7 @@ export default function JanjiTemuClient({ doctors }: { doctors: BookableDoctor[]
                     >
                       {patients.map((p) => (
                         <option key={p.id} value={p.id}>
-                          {p.nama_pasien} &mdash; {p.no_hp}
+                          {p.namaPasien} &mdash; {p.noHp}
                         </option>
                       ))}
                     </select>
