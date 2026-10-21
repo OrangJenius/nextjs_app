@@ -43,13 +43,22 @@ function ProfileMenu({ name }: { name: string }) {
         aria-label="Menu akun"
         aria-expanded={open}
         aria-haspopup="menu"
-        className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${
+        className={`flex items-center gap-2 pl-1.5 pr-3 h-10 rounded-full border transition-all ${
           open
             ? 'bg-rose-500 text-white border-rose-500'
             : 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100'
         }`}
       >
-        <User size={20} />
+        <span
+          className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+            open ? 'bg-white/20 text-white' : 'bg-rose-500 text-white'
+          }`}
+        >
+          {name.charAt(0).toUpperCase()}
+        </span>
+        <span className="text-sm font-semibold max-w-[120px] truncate">
+          {name}
+        </span>
       </button>
 
       {open && (
