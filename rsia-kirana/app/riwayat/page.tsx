@@ -1,10 +1,12 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Calendar, Clock, Stethoscope, FileText } from 'lucide-react';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import CancelButton from './cancelButton';
 
 // CATATAN SOAL JAM: preferred_time disimpan tanpa suffix "Z" di route booking,
 // jadi nilainya mengikuti timezone server tempat data itu dibuat (lokal saat
@@ -40,11 +42,28 @@ type AppointmentWithRelations = Awaited<ReturnType<typeof prisma.appointments.fi
   patients: { nama_pasien: string } | null;
 };
 
+async function cancelAppointment(formData: FormData) {
+  'use server';
+  
+  const id = Number(formData.get('appointmentId'));
+  
+  if (id) {
+    await prisma.appointments.update({
+      where: { id },
+      data: { status: 'cancelled' },
+    });
+    
+    revalidatePath('/riwayat'); 
+  }
+}
+
 function AppointmentCard({ appointment }: { appointment: AppointmentWithRelations }) {
   const statusInfo = STATUS_LABELS[appointment.status] ?? {
     label: appointment.status,
     className: 'bg-slate-100 text-slate-600',
   };
+
+  const canCancel = appointment.status === 'pending' || appointment.status === 'confirmed';
 
   return (
     <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
@@ -79,12 +98,21 @@ function AppointmentCard({ appointment }: { appointment: AppointmentWithRelation
         )}
       </div>
 
-      <p className="text-[11px] text-slate-400 mt-3">
-        Pasien:{' '}
-        <strong className="text-slate-600">
-          {appointment.patients?.nama_pasien ?? appointment.patient_name}
-        </strong>
-      </p>
+      <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-50">
+        <p className="text-[11px] text-slate-400">
+          Pasien:{' '}
+          <strong className="text-slate-600">
+            {appointment.patients?.nama_pasien ?? appointment.patient_name}
+          </strong>
+        </p>
+        
+        {canCancel && (
+          <form action={cancelAppointment}>
+            <input type="hidden" name="appointmentId" value={appointment.id} />
+            <CancelButton/> 
+          </form>
+        )}
+      </div>
     </div>
   );
 }

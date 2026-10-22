@@ -3,10 +3,6 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 
-// Gunakan instance Prisma tunggal (hindari membuat koneksi baru tiap request
-// saat hot-reload di development). Jika Anda sudah punya lib/prisma.ts,
-// ganti baris di bawah dengan: import { prisma } from '@/lib/prisma';
-
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
@@ -20,6 +16,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
+        admin: { label: 'Admin', type: 'text' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -29,17 +26,21 @@ export const authOptions: NextAuthOptions = {
         const user = await prisma.users.findUnique({
           where: { email: credentials.email },
         });
-
         if (!user) return null;
 
         const isValid = await bcrypt.compare(credentials.password, user.password);
         if (!isValid) return null;
 
-        return {
+        // Login lewat /admin/login hanya boleh untuk akun admin
+        if (credentials.admin === 'true' && user.role !== 'admin') return null;
+
+        const authUser = {
           id: String(user.id),
           name: user.name,
           email: user.email,
+          role: user.role,
         };
+        return authUser;
       },
     }),
   ],
@@ -47,12 +48,15 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = (user as { role?: string }).role ?? 'user';
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as typeof session.user & { id: string }).id = token.id as string;
+        const u = session.user as typeof session.user & { id: string; role: string };
+        u.id = token.id as string;
+        u.role = (token.role as string) ?? 'user';
       }
       return session;
     },
