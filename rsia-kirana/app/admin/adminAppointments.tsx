@@ -40,7 +40,6 @@ function formatDate(date: string) {
   });
 }
 
-// 0812... -> https://wa.me/62812...
 function waLink(phone: string) {
   const digits = phone.replace(/\D/g, '');
   const intl = digits.startsWith('62') ? digits : digits.startsWith('0') ? `62${digits.slice(1)}` : `62${digits}`;
@@ -59,6 +58,10 @@ export default function AdminAppointments({
   const [query, setQuery] = useState('');
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [error, setError] = useState('');
+
+  // States for confirmation modal
+  const [modal, setModal] = useState<{ id: number; targetStatus: string; type: 'normal' | 'typed' } | null>(null);
+  const [confirmText, setConfirmText] = useState('');
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: appointments.length };
@@ -81,18 +84,41 @@ export default function AdminAppointments({
     });
   }, [appointments, filter, query]);
 
-  const handleStatusChange = async (id: number, status: string) => {
+  // Determine modal type and open it
+  const requestStatusChange = (id: number, currentStatus: string, targetStatus: string) => {
+    if (currentStatus === targetStatus) return;
+    
+    let type: 'normal' | 'typed' = 'typed';
+    
+    if (targetStatus === 'completed' || targetStatus === 'cancelled' || targetStatus === 'pending') {
+      type = 'typed';
+    } else {
+      // Like from pending -> confirmed
+      type = 'normal';
+    }
+
+    setConfirmText('');
+    setModal({ id, targetStatus, type });
+  };
+
+  // Execute API call after confirmation
+  const confirmStatusChange = async () => {
+    if (!modal) return;
+    
+    const { id, targetStatus } = modal;
+    setModal(null);
     setError('');
     setUpdatingId(id);
+    
     try {
       const res = await fetch(`/api/admin/appointments/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status: targetStatus }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Gagal mengubah status.');
-      setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
+      setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status: targetStatus } : a)));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Terjadi kesalahan.');
     } finally {
@@ -189,7 +215,7 @@ export default function AdminAppointments({
                     <select
                       value={a.status}
                       disabled={updatingId === a.id}
-                      onChange={(e) => handleStatusChange(a.id, e.target.value)}
+                      onChange={(e) => requestStatusChange(a.id, a.status, e.target.value)}
                       aria-label={`Ubah status janji temu ${a.patientName}`}
                       className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-400 disabled:opacity-60"
                     >
@@ -240,6 +266,49 @@ export default function AdminAppointments({
           )}
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      {modal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Konfirmasi Status</h3>
+            <p className="text-sm text-slate-600 mb-4">
+              Anda akan mengubah status menjadi <span className="font-bold text-slate-800">{statusInfo(modal.targetStatus).label}</span>.
+            </p>
+
+            {modal.type === 'typed' && (
+              <div className="mb-5 bg-rose-50 p-3 rounded-xl border border-rose-100">
+                <label className="block text-xs font-medium text-rose-800 mb-2">
+                  Ketik <strong className="font-extrabold text-rose-600 select-none">KONFIRMASI</strong> untuk melanjutkan:
+                </label>
+                <input
+                  type="text"
+                  value={confirmText}
+                  onChange={(e) => setConfirmText(e.target.value)}
+                  placeholder="KONFIRMASI"
+                  className="w-full px-3 py-2 rounded-lg border border-rose-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-400"
+                />
+              </div>
+            )}
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setModal(null)}
+                className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                onClick={confirmStatusChange}
+                disabled={modal.type === 'typed' && confirmText !== 'KONFIRMASI'}
+                className="px-4 py-2 text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Simpan Status
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
