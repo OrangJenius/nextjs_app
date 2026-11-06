@@ -1,9 +1,7 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
-import Image from 'next/image';
-import { signOut } from 'next-auth/react';
-import { Calendar, Clock, Stethoscope, FileText, Phone, Search, LogOut, MessageCircle } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Calendar, Clock, Stethoscope, FileText, Phone, Search, MessageCircle } from 'lucide-react';
 
 export interface AdminAppointment {
   id: number;
@@ -40,28 +38,60 @@ function formatDate(date: string) {
   });
 }
 
+// 0812... -> https://wa.me/62812...
 function waLink(phone: string) {
   const digits = phone.replace(/\D/g, '');
   const intl = digits.startsWith('62') ? digits : digits.startsWith('0') ? `62${digits.slice(1)}` : `62${digits}`;
   return `https://wa.me/${intl}`;
 }
 
+function aptCode(id: number) {
+  return `APT-${String(id).padStart(6, '0')}`;
+}
+
+// Aturan konfirmasi perubahan status:
+// - dari Selesai / Dibatalkan ke status lain -> harus mengetik kode janji temu
+// - dari status apa pun ke Menunggu          -> cukup klik konfirmasi
+// (jika keduanya berlaku, misalnya Selesai -> Menunggu, yang dipakai adalah 'type')
+// Aturan yang sama dicek ulang di API (PATCH /api/admin/appointments/[id]).
+function confirmationLevel(from: string, to: string): 'none' | 'confirm' | 'type' {
+  if (from === to) return 'none';
+  if (from === 'completed' || from === 'cancelled') return 'type';
+  if (to === 'pending') return 'confirm';
+  return 'none';
+}
+
+interface PendingChange {
+  appointment: AdminAppointment;
+  status: string;
+  level: 'confirm' | 'type';
+}
+
 export default function AdminAppointments({
   appointments: initial,
-  adminName,
 }: {
   appointments: AdminAppointment[];
-  adminName: string;
 }) {
   const [appointments, setAppointments] = useState(initial);
   const [filter, setFilter] = useState<string>('all');
   const [query, setQuery] = useState('');
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [error, setError] = useState('');
+  const [pending, setPending] = useState<PendingChange | null>(null);
+  const [typed, setTyped] = useState('');
 
-  // States for confirmation modal
-  const [modal, setModal] = useState<{ id: number; targetStatus: string; type: 'normal' | 'typed' } | null>(null);
-  const [confirmText, setConfirmText] = useState('');
+  // Tutup dialog konfirmasi dengan Escape (kecuali sedang menyimpan)
+  useEffect(() => {
+    if (!pending) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && updatingId === null) {
+        setPending(null);
+        setTyped('');
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [pending, updatingId]);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: appointments.length };
@@ -84,76 +114,64 @@ export default function AdminAppointments({
     });
   }, [appointments, filter, query]);
 
-  // Determine modal type and open it
-  const requestStatusChange = (id: number, currentStatus: string, targetStatus: string) => {
-    if (currentStatus === targetStatus) return;
-    
-    let type: 'normal' | 'typed' = 'typed';
-    
-    if (targetStatus === 'completed' || targetStatus === 'cancelled' || targetStatus === 'pending') {
-      type = 'typed';
-    } else {
-      // Like from pending -> confirmed
-      type = 'normal';
-    }
-
-    setConfirmText('');
-    setModal({ id, targetStatus, type });
-  };
-
-  // Execute API call after confirmation
-  const confirmStatusChange = async () => {
-    if (!modal) return;
-    
-    const { id, targetStatus } = modal;
-    setModal(null);
+  const applyStatus = async (id: number, status: string, confirmed: boolean): Promise<boolean> => {
     setError('');
     setUpdatingId(id);
-    
     try {
       const res = await fetch(`/api/admin/appointments/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: targetStatus }),
+        body: JSON.stringify({ status, confirmed }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Gagal mengubah status.');
-      setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status: targetStatus } : a)));
+      setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
+      return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Terjadi kesalahan.');
+      return false;
     } finally {
       setUpdatingId(null);
+    }
+  };
+
+  // Dipanggil saat dropdown status diubah: langsung simpan jika aman,
+  // atau buka dialog konfirmasi jika perubahannya termasuk yang dijaga.
+  const requestStatusChange = (a: AdminAppointment, status: string) => {
+    const level = confirmationLevel(a.status, status);
+    if (level === 'none') {
+      if (a.status !== status) applyStatus(a.id, status, false);
+      return;
+    }
+    setError('');
+    setTyped('');
+    setPending({ appointment: a, status, level });
+  };
+
+  const closeDialog = () => {
+    if (updatingId !== null) return;
+    setPending(null);
+    setTyped('');
+  };
+
+  const canConfirm =
+    pending !== null &&
+    (pending.level === 'confirm' || typed.trim().toUpperCase() === aptCode(pending.appointment.id));
+
+  const handleConfirm = async () => {
+    if (!pending || !canConfirm || updatingId !== null) return;
+    const ok = await applyStatus(pending.appointment.id, pending.status, true);
+    if (ok) {
+      setPending(null);
+      setTyped('');
     }
   };
 
   const tabs = [{ value: 'all', label: 'Semua' }, ...STATUSES];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans pb-20">
-      <header className="bg-white border-b border-rose-100 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Image src="/images/logo.png" alt="Logo RSIA Kirana" width={32} height={32} className="object-contain" priority />
-            <span className="font-bold text-slate-900 tracking-tight text-sm">RSIA KIRANA</span>
-            <span className="bg-rose-100 text-rose-700 text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
-              Admin
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="hidden sm:block text-xs text-slate-500">
-              Masuk sebagai <strong className="text-slate-700">{adminName}</strong>
-            </span>
-            <button
-              onClick={() => signOut({ callbackUrl: '/admin/login' })}
-              className="flex items-center gap-1.5 text-slate-500 hover:text-rose-600 text-xs font-semibold"
-            >
-              <LogOut size={14} /> Keluar
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
+    <div>
+      <div>
         <h1 className="text-2xl font-extrabold text-slate-900">Janji Temu Pasien</h1>
         <p className="text-slate-600 text-sm mt-1">Lihat semua pendaftaran dan ubah statusnya.</p>
 
@@ -215,7 +233,7 @@ export default function AdminAppointments({
                     <select
                       value={a.status}
                       disabled={updatingId === a.id}
-                      onChange={(e) => requestStatusChange(a.id, a.status, e.target.value)}
+                      onChange={(e) => requestStatusChange(a, e.target.value)}
                       aria-label={`Ubah status janji temu ${a.patientName}`}
                       className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-400 disabled:opacity-60"
                     >
@@ -267,43 +285,77 @@ export default function AdminAppointments({
         </div>
       </div>
 
-      {/* Confirmation Modal */}
-      {modal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
-            <h3 className="text-lg font-bold text-slate-900 mb-2">Konfirmasi Status</h3>
-            <p className="text-sm text-slate-600 mb-4">
-              Anda akan mengubah status menjadi <span className="font-bold text-slate-800">{statusInfo(modal.targetStatus).label}</span>.
+      {/* Dialog konfirmasi perubahan status */}
+      {pending && (
+        <div
+          className="fixed inset-0 z-[60] bg-slate-900/50 flex items-center justify-center px-4"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) closeDialog();
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirm-title"
+            className="w-full max-w-md bg-white rounded-2xl p-6 shadow-xl"
+          >
+            <h2 id="confirm-title" className="text-base font-bold text-slate-900">
+              Ubah status janji temu?
+            </h2>
+            <p className="text-sm text-slate-600 mt-2">
+              <strong>{pending.appointment.patientName}</strong> ({aptCode(pending.appointment.id)}) akan
+              diubah dari <strong>{statusInfo(pending.appointment.status).label}</strong> menjadi{' '}
+              <strong>{statusInfo(pending.status).label}</strong>.
             </p>
 
-            {modal.type === 'typed' && (
-              <div className="mb-5 bg-rose-50 p-3 rounded-xl border border-rose-100">
-                <label className="block text-xs font-medium text-rose-800 mb-2">
-                  Ketik <strong className="font-extrabold text-rose-600 select-none">KONFIRMASI</strong> untuk melanjutkan:
+            {pending.level === 'type' ? (
+              <div className="mt-4">
+                <label htmlFor="confirm-input" className="block text-xs font-semibold text-slate-700 mb-1">
+                  Status ini sudah final. Ketik{' '}
+                  <span className="font-mono text-rose-600">{aptCode(pending.appointment.id)}</span> untuk
+                  melanjutkan.
                 </label>
                 <input
+                  id="confirm-input"
+                  autoFocus
                   type="text"
-                  value={confirmText}
-                  onChange={(e) => setConfirmText(e.target.value)}
-                  placeholder="KONFIRMASI"
-                  className="w-full px-3 py-2 rounded-lg border border-rose-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-400"
+                  autoComplete="off"
+                  value={typed}
+                  onChange={(e) => setTyped(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleConfirm();
+                    }
+                  }}
+                  placeholder={aptCode(pending.appointment.id)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-rose-400"
                 />
               </div>
+            ) : (
+              <p className="text-xs text-slate-500 mt-3">
+                Janji temu ini akan kembali berstatus Menunggu. Pastikan perubahan ini memang diperlukan.
+              </p>
             )}
 
-            <div className="flex justify-end gap-3">
+            {error && <p className="text-xs text-red-600 font-medium mt-3">{error}</p>}
+
+            <div className="flex justify-end gap-2 mt-5">
               <button
-                onClick={() => setModal(null)}
-                className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
+                type="button"
+                onClick={closeDialog}
+                disabled={updatingId !== null}
+                className="bg-slate-100 hover:bg-slate-200 disabled:opacity-60 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold"
               >
                 Batal
               </button>
               <button
-                onClick={confirmStatusChange}
-                disabled={modal.type === 'typed' && confirmText !== 'KONFIRMASI'}
-                className="px-4 py-2 text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                type="button"
+                onClick={handleConfirm}
+                disabled={!canConfirm || updatingId !== null}
+                className="bg-rose-500 hover:bg-rose-600 disabled:bg-slate-300 disabled:text-slate-500 text-white px-4 py-2 rounded-xl text-xs font-semibold"
               >
-                Simpan Status
+                {updatingId !== null ? 'Menyimpan...' : 'Ya, ubah status'}
               </button>
             </div>
           </div>

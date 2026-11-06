@@ -34,10 +34,5 @@ export default async function AdminPage() {
     createdAt: a.created_at.toISOString(),
   }));
 
-  return (
-    <AdminAppointments
-      appointments={appointments}
-      adminName={session.user?.name ?? 'Admin'}
-    />
-  );
+  return <AdminAppointments appointments={appointments} />;
 }
