@@ -130,7 +130,8 @@ export function parseArticleBody(body: unknown):
       source: orNull(b.source),
       hashtag: orNull(b.hashtag),
     },
-    published: b.published === true,
+    // Artikel selalu terbit saat disimpan (form tidak lagi punya kotak centang)
+    published: b.published !== false,
   };
 }
 
@@ -178,9 +179,9 @@ export function parseEventBody(body: unknown):
         title: string;
         category: string;
         description: string;
-        event_date: Date;
-        event_time: string;
-        location: string;
+        event_date: Date | null;
+        event_time: string | null;
+        location: string | null;
       };
       images: EventImageInput[];
     } {
@@ -193,14 +194,22 @@ export function parseEventBody(body: unknown):
   const location = str(b.location);
   const date = str(b.date);
 
-  if (!title || !category || !description || !eventTime || !location) {
-    return { error: 'Judul, kategori, deskripsi, jam, dan lokasi wajib diisi.' };
+  if (!title || !category || !description) {
+    return { error: 'Judul, kategori, dan deskripsi wajib diisi.' };
   }
 
-  // Tanggal harus format YYYY-MM-DD dan benar-benar ada di kalender
-  const eventDate = new Date(`${date}T00:00:00.000Z`);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(eventDate.getTime()) || eventDate.toISOString().slice(0, 10) !== date) {
-    return { error: 'Tanggal tidak valid.' };
+  // Tanggal boleh kosong. Jika diisi, harus format YYYY-MM-DD dan benar-benar ada di kalender
+  let eventDate: Date | null = null;
+  if (date) {
+    const parsedDate = new Date(`${date}T00:00:00.000Z`);
+    if (
+      !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+      Number.isNaN(parsedDate.getTime()) ||
+      parsedDate.toISOString().slice(0, 10) !== date
+    ) {
+      return { error: 'Tanggal tidak valid.' };
+    }
+    eventDate = parsedDate;
   }
 
   const images: EventImageInput[] = [];
@@ -216,7 +225,14 @@ export function parseEventBody(body: unknown):
   }
 
   return {
-    data: { title, category, description, event_date: eventDate, event_time: eventTime, location },
+    data: {
+      title,
+      category,
+      description,
+      event_date: eventDate,
+      event_time: eventTime || null,
+      location: location || null,
+    },
     images,
   };
 }
