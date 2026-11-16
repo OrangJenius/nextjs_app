@@ -215,7 +215,7 @@ export default function ArtikelManager({ articles }: { articles: AdminArticle[] 
         />
       </Field>
 
-      <Field label="Isi artikel lengkap" hint="Opsional jika ringkasan diisi. Isi lengkap belum ditampilkan di halaman Berita.">
+      <Field label="Isi artikel lengkap" hint="Tampil di halaman detail artikel. Opsional jika ringkasan diisi. Baris kosong memisahkan paragraf.">
         <textarea
           rows={10}
           value={form.content}

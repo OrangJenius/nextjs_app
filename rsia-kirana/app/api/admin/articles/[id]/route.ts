@@ -6,6 +6,12 @@ import { parseArticleBody, isUniqueViolation } from '@/lib/adminInput';
 
 type Ctx = { params: Promise<{ id: string }> };
 
+function revalidateArticlePages() {
+  revalidatePath('/');
+  revalidatePath('/berita');
+  revalidatePath('/berita/[id]', 'page');
+}
+
 export async function PUT(req: Request, { params }: Ctx) {
   if (!(await getAdminSession())) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -38,8 +44,7 @@ export async function PUT(req: Request, { params }: Ctx) {
       data: { ...parsed.data, published_at },
     });
 
-    revalidatePath('/');
-    revalidatePath('/berita');
+    revalidateArticlePages();
     return NextResponse.json({ ok: true });
   } catch (err) {
     if (isUniqueViolation(err)) {
@@ -62,8 +67,7 @@ export async function DELETE(_req: Request, { params }: Ctx) {
 
   try {
     await prisma.articles.delete({ where: { id: articleId } });
-    revalidatePath('/');
-    revalidatePath('/berita');
+    revalidateArticlePages();
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: 'Artikel tidak ditemukan.' }, { status: 404 });

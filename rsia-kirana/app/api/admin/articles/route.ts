@@ -21,6 +21,7 @@ export async function POST(req: Request) {
 
     revalidatePath('/');
     revalidatePath('/berita');
+    revalidatePath('/berita/[id]', 'page');
     return NextResponse.json({ id: article.id }, { status: 201 });
   } catch (err) {
     if (isUniqueViolation(err)) {
