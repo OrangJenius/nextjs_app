@@ -1,13 +1,29 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Calendar, Clock, Stethoscope, FileText, Phone, Search, MessageCircle } from 'lucide-react';
+import {
+  Calendar,
+  Clock,
+  Stethoscope,
+  FileText,
+  Phone,
+  Search,
+  MessageCircle,
+  CreditCard,
+  MapPin,
+  User,
+  Mail,
+  Eye,
+  EyeOff,
+} from 'lucide-react';
 
 export interface AdminAppointment {
   id: number;
   patientName: string;
   phone: string;
   email: string | null;
+  nik: string | null;
+  isGuest: boolean;
   doctorName: string | null;
   specialization: string | null;
   date: string; // YYYY-MM-DD
@@ -38,6 +54,15 @@ function formatDate(date: string) {
   });
 }
 
+function formatBirthDate(date: string) {
+  return new Date(`${date}T00:00:00Z`).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
 // 0812... -> https://wa.me/62812...
 function waLink(phone: string) {
   const digits = phone.replace(/\D/g, '');
@@ -47,6 +72,41 @@ function waLink(phone: string) {
 
 function aptCode(id: number) {
   return `APT-${String(id).padStart(6, '0')}`;
+}
+
+// Show only the last 4 digits of the NIK until the admin chooses to reveal it
+function maskNik(nik: string) {
+  if (nik.length <= 4) return nik;
+  return `${'•'.repeat(nik.length - 4)}${nik.slice(-4)}`;
+}
+
+function NikField({ nik }: { nik: string | null }) {
+  const [shown, setShown] = useState(false);
+
+  if (!nik) {
+    return (
+      <div className="flex items-center gap-2">
+        <CreditCard size={14} className="text-rose-500 shrink-0" /> NIK: -
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <CreditCard size={14} className="text-rose-500 shrink-0" />
+      <span>
+        NIK: <span className="font-mono">{shown ? nik : maskNik(nik)}</span>
+      </span>
+      <button
+        type="button"
+        onClick={() => setShown((v) => !v)}
+        aria-label={shown ? 'Sembunyikan NIK' : 'Tampilkan NIK'}
+        className="text-slate-400 hover:text-slate-600"
+      >
+        {shown ? <EyeOff size={13} /> : <Eye size={13} />}
+      </button>
+    </div>
+  );
 }
 
 // Aturan konfirmasi perubahan status:
@@ -80,7 +140,7 @@ export default function AdminAppointments({
   const [pending, setPending] = useState<PendingChange | null>(null);
   const [typed, setTyped] = useState('');
 
-  // Tutup dialog konfirmasi dengan Escape (kecuali sedang menyimpan)
+  // Close the confirmation dialog with Escape (unless a save is in progress)
   useEffect(() => {
     if (!pending) return;
     const onKeyDown = (e: KeyboardEvent) => {
@@ -108,8 +168,9 @@ export default function AdminAppointments({
       return (
         a.patientName.toLowerCase().includes(q) ||
         a.phone.toLowerCase().includes(q) ||
+        (a.nik ?? '').includes(q) ||
         (a.doctorName ?? '').toLowerCase().includes(q) ||
-        `apt-${String(a.id).padStart(6, '0')}`.includes(q)
+        aptCode(a.id).toLowerCase().includes(q)
       );
     });
   }, [appointments, filter, query]);
@@ -135,8 +196,8 @@ export default function AdminAppointments({
     }
   };
 
-  // Dipanggil saat dropdown status diubah: langsung simpan jika aman,
-  // atau buka dialog konfirmasi jika perubahannya termasuk yang dijaga.
+  // Called when the status dropdown changes: save right away if safe,
+  // or open the confirmation dialog for guarded changes.
   const requestStatusChange = (a: AdminAppointment, status: string) => {
     const level = confirmationLevel(a.status, status);
     if (level === 'none') {
@@ -204,7 +265,7 @@ export default function AdminAppointments({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Cari nama pasien, nomor HP, dokter, atau kode APT..."
+            placeholder="Cari nama pasien, NIK, nomor HP, dokter, atau kode APT..."
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-400"
           />
         </div>
@@ -227,7 +288,7 @@ export default function AdminAppointments({
                       <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${info.className}`}>
                         {info.label}
                       </span>
-                      <span className="text-[11px] text-slate-400">APT-{String(a.id).padStart(6, '0')}</span>
+                      <span className="text-[11px] text-slate-400">{aptCode(a.id)}</span>
                     </div>
 
                     <select
@@ -245,8 +306,42 @@ export default function AdminAppointments({
                     </select>
                   </div>
 
-                  <h3 className="font-bold text-slate-900 text-base mt-3">{a.patientName}</h3>
+                  <div className="flex flex-wrap items-center gap-2 mt-3">
+                    <h3 className="font-bold text-slate-900 text-base">{a.patientName}</h3>
+                    <span
+                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                        a.isGuest ? 'bg-slate-100 text-slate-600' : 'bg-sky-100 text-sky-700'
+                      }`}
+                    >
+                      {a.isGuest ? 'Tamu' : 'Pasien terdaftar'}
+                    </span>
+                  </div>
 
+                  {/* Data pasien */}
+                  <div className="mt-3 rounded-xl bg-slate-50 border border-slate-100 p-3 grid sm:grid-cols-2 gap-x-6 gap-y-2 text-xs text-slate-600">
+                    <p className="sm:col-span-2 text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                      Data Pasien
+                    </p>
+                    <NikField nik={a.nik} />
+                    <div className="flex items-center gap-2">
+                      <Phone size={14} className="text-rose-500 shrink-0" /> {a.phone}
+                      <a
+                        href={waLink(a.phone)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-semibold"
+                      >
+                        <MessageCircle size={13} /> WhatsApp
+                      </a>
+                    </div>
+                    {a.email && (
+                      <div className="flex items-center gap-2">
+                        <Mail size={14} className="text-rose-500 shrink-0" /> {a.email}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Detail janji temu */}
                   <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2 mt-3 text-xs text-slate-600">
                     <div className="flex items-center gap-2">
                       <Calendar size={14} className="text-rose-500 shrink-0" /> {formatDate(a.date)}
@@ -259,18 +354,6 @@ export default function AdminAppointments({
                       {a.doctorName ?? 'Dokter tidak diketahui'}
                       {a.specialization ? ` — ${a.specialization}` : ''}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Phone size={14} className="text-rose-500 shrink-0" /> {a.phone}
-                      <a
-                        href={waLink(a.phone)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-semibold"
-                      >
-                        <MessageCircle size={13} /> WhatsApp
-                      </a>
-                    </div>
-                    {a.email && <div className="text-slate-500">{a.email}</div>}
                     {a.notes && (
                       <div className="flex items-start gap-2 sm:col-span-2">
                         <FileText size={14} className="text-rose-500 shrink-0 mt-0.5" />
@@ -288,7 +371,7 @@ export default function AdminAppointments({
       {/* Dialog konfirmasi perubahan status */}
       {pending && (
         <div
-          className="fixed inset-0 z-[60] bg-slate-900/50 flex items-center justify-center px-4"
+          className="fixed inset-0 z-60 bg-slate-900/50 flex items-center justify-center px-4"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) closeDialog();
           }}

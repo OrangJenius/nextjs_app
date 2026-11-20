@@ -10,6 +10,7 @@ datasource db {
 model appointments {
   id             Int       @id @default(autoincrement())
   patient_name   String
+  nik            String?   @db.VarChar(16)
   phone          String
   email          String?
   doctor_id      String?   @db.Char(36)

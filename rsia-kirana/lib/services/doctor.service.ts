@@ -116,6 +116,8 @@ export async function getBookableDoctors() {
       schedules: doc.doctors_schedule.map((s) => ({
         dayOfWeek: s.day_of_week,
         hours: `${formatTime(s.start_time)} - ${formatTime(s.end_time)} WITA`,
+        start: formatTime(s.start_time), // "10:00"
+        end: formatTime(s.end_time),     // "12:00"
       })),
     }))
 }

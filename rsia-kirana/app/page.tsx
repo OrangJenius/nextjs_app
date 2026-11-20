@@ -462,7 +462,15 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center space-x-2 text-white mb-4">
-              <Heart className="text-rose-500 fill-current" size={20} />
+              <div className="relative w-8 h-8 shrink-0">
+                <Image
+                  src="/images/logo.png"
+                  alt="Logo RSIA Kirana"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
               <span className="font-bold text-lg">RSIA KIRANA</span>
             </div>
             <p className="text-sm">
@@ -480,16 +488,22 @@ export default function Home() {
           <div>
             <h5 className="text-white font-semibold mb-4">Kontak</h5>
             <ul className="space-y-2 text-sm">
-              <li>Call Center: 0813-8888-8898</li>
-              <li>WhatsApp IGD: 0858-8888-8898</li>
-              <li>Email: rskirana94@gmail.com</li>
+              <li><Link href="https://wa.me/6281388888898" className="hover:text-white transition-colors">Call Center: 0813-8888-8898</Link></li>
+              <li><Link href="https://wa.me/6281388888898" className="hover:text-white transition-colors">WhatsApp IGD: 0858-8888-8898</Link></li>
+              <li><Link href="mailto:rskirana94@gmail.com" className="hover:text-white transition-colors">Email: rskirana94@gmail.com</Link></li>
+              <li><Link href="https://instagram.com/rsiakirana_manado" className="hover:text-white transition-colors">Instagram: @rsiakirana_manado</Link></li>
             </ul>
           </div>
           <div>
             <h5 className="text-white font-semibold mb-4">Lokasi</h5>
-            <p className="text-sm">
-              Jl. Jendral Sudirman No.78, Pinaesaan, Kec. Wenang, Kota Manado
-            </p>
+            <Link
+              href="https://google.com/maps?um=1&ie=UTF-8&fb=1&gl=id&sa=X&geocode=KQF0OGtHdYcyMUahZF74M9F1&daddr=Jl.+Jendral+Sudirman+No.78,+Pinaesaan,+Kec.+Wenang,+Kota+Manado,+Sulawesi+Utara+95123"
+              className="hover:text-white transition-colors"
+            >
+              <p className="text-sm">
+                Jl. Jendral Sudirman No.78, Pinaesaan, Kec. Wenang, Kota Manado
+              </p>
+            </Link>
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-6 border-t border-slate-800 text-xs text-center">

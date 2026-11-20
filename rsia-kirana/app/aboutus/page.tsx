@@ -20,8 +20,35 @@ import {
   Activity,
   CalendarCheck,
   CheckCircle2,
-  FileText
+  FileText,
 } from 'lucide-react';
+
+function InstagramIcon({
+  className,
+  size = 20,
+}: {
+  className?: string;
+  size?: number;
+}) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
 
 export default function AboutPage() {
   return (
@@ -267,28 +294,55 @@ export default function AboutPage() {
 
       {/* Kontak Informasi */}
       <section className="max-w-5xl mx-auto px-4 mt-12">
-        <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 grid md:grid-cols-3 gap-6 items-center">
+        <div className="bg-slate-900 text-white rounded-4xl p-6 sm:p-8 grid md:grid-cols-4 gap-6 items-center">
           <div className="flex items-start gap-3">
             <MapPin className="text-rose-400 shrink-0 mt-1" size={20} />
             <div>
+              <Link
+                href="https://google.com/maps?um=1&ie=UTF-8&fb=1&gl=id&sa=X&geocode=KQF0OGtHdYcyMUahZF74M9F1&daddr=Jl.+Jendral+Sudirman+No.78,+Pinaesaan,+Kec.+Wenang,+Kota+Manado,+Sulawesi+Utara+95123"
+                target='_blank'
+              >
               <h4 className="font-bold text-sm">Alamat Lengkap</h4>
               <p className="text-slate-400 text-xs mt-1 leading-relaxed">
                 Jl. Jend. Sudirman No. 78, Kel. Lawangirung, Kec. Wenang, Kota Manado
               </p>
+              </Link>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <PhoneCall className="text-rose-400 shrink-0 mt-1" size={20} />
             <div>
+              <Link
+                href="https://wa.me/6281388888898"
+                target='_blank'
+              >
               <h4 className="font-bold text-sm">Telepon / Kontak</h4>
               <p className="text-slate-400 text-xs mt-1">0813-8888-8898</p>
+              </Link>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Mail className="text-rose-400 shrink-0 mt-1" size={20} />
             <div>
+              <Link
+                href="mailto:rskirana94@gmail.com"
+                target='_blank'
+              >
               <h4 className="font-bold text-sm">Email Resmi</h4>
               <p className="text-slate-400 text-xs mt-1">rskirana94@gmail.com</p>
+              </Link>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <InstagramIcon className="text-rose-400 shrink-0 mt-1" size={20} />
+            <div>
+              <Link
+                href="https://www.instagram.com/rsiakirana_manado"
+                target='_blank'
+              >
+              <h4 className="font-bold text-sm">Instagram Resmi</h4>
+              <p className="text-slate-400 text-xs mt-1">@rsiakirana_manado</p>
+              </Link>
             </div>
           </div>
         </div>

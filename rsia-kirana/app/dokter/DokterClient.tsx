@@ -222,7 +222,7 @@ export default function DokterClient({ doctors }: { doctors: DoctorWithSchedules
                   {/* Booking Button */}
                   {isBookable ? (
                     <Link
-                      href="/janji-temu"
+                      href={`/janji-temu?dokter=${doc.id}`}
                       className="w-full bg-rose-500 hover:bg-rose-600 text-white font-semibold text-xs py-3 rounded-xl text-center transition-colors shadow-sm flex items-center justify-center gap-2"
                     >
                       <Calendar size={14} /> Buat Janji dengan Dokter Ini
